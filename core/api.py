@@ -213,8 +213,8 @@ class SearchUserListAPI(mixins.ListModelMixin, generics.GenericAPIView):
         return self.list(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        query_text = self.request.query_params.get('search_user', None)
+        query_text = self.request.query_params.get('username', None)
         if query_text is not None:
-            self.queryset = self.queryset.filter(username_eng__contains=query_text)
+            self.queryset = self.queryset.filter(username=query_text)
         self.queryset = self.queryset.exclude(id=request.user.id)
         return super(SearchUserListAPI, self).list(request, *args, **kwargs)

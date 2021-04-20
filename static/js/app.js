@@ -22,7 +22,7 @@ let selectedUserName = null
 
 document.getElementById('FileUpload').addEventListener('change', handleFile);
 
-
+let currentRecipientName=null
 
 function handleFile(e) {
     uploadedFile = e.target.files[0];
@@ -37,6 +37,7 @@ function handleFile(e) {
 function onSelectUser(user,username_eng){
    
     console.log(username_eng)
+    currentRecipientName=username_eng
     setCurrentRecipient(user,username_eng)
      console.log(username_eng)
 
@@ -79,7 +80,7 @@ function addFilesFromSocket(file,fileName){
 
 function updateUserList() {
     $.getJSON('api/v1/members/', function (data) {
-        // userList.children('.user').remove();[mashuq commented this]
+        userList.children('.user').remove();
         console.log(data)
 
         for (let i = 0; i < data.length; i++) {
@@ -87,7 +88,7 @@ function updateUserList() {
 
             const userItem =
             `
-            <div id="selectUser"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
+            <div id="selectUser" class="user"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
                     <li class="media align-items-center px-1 active py-2">
                         <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
                         <div class="media-body">
@@ -170,9 +171,9 @@ function drawMessage(message) {
          const messageItem=
      `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
                  <div class="media comming">
-                  <img src="{%static 'img/user-img.png' %}" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
+                  <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
                     <div class="media-body">
-                      <span class="font-size-12 mb-0 color-gray">Niton, Fri 14:24</span>
+                      <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, Fri 14:24</span>
                         <div  class="msg-text">
                                 ${body}
                  </div>
@@ -212,6 +213,7 @@ function getMessageById(message) {
         }
        ;
     });
+    updateUserList()
 }
 
 // Send message to messages api
@@ -253,9 +255,10 @@ function  uploadFile(recipient, body,file) {
 function setCurrentRecipient(username,username_eng) {
     // console.log(contactProfile);
     
-    // username_tag = contactProfile.getElementsByTagName('h3')[0]
+    username_tag = contactProfile.getElementsByTagName('h4')[0]
     // console.log(b[0].innerText);
-    // username_tag.innerText = username_eng
+    console.log("the searched user is",username_eng)
+    username_tag.innerText = username_eng
     currentRecipient = username;
     // console.log(username);
     getConversation(currentRecipient);
@@ -285,10 +288,9 @@ $(document).ready(function () {
     updateUserList();
     disableInput();
     // $("#message-box").scrollTop($(document).height());
-    $("#search-box").hide()
-    $("#back-button").hide()
+ 
     
-    // userProfile.getElementsByTagName('h4')[0].innerText=currentUserName
+    userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
 //    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
     var socket = new WebSocket(
         'ws://' + window.location.host +
@@ -301,30 +303,9 @@ $(document).ready(function () {
 
             chatButton.click();
     });
-    searchInput.keypress(function(e){
-        if(e.keyCode==13){
-            $("#search-box").children(".update-list").remove()
-           if(searchInput.val().length>0){
-            drawSearchedUser(searchInput.val())
-            searchInput.val('')
-           }
-        }
-    })
-    searchInput.click(function(e){
-        console.log("the search box is clicked!!!")
-        $("#user-list").hide()
-        $("#search-box").show()
-        $("#back-button").show()
+  
+   
 
-    })
-
-    $("#back-button").click(function(e){
-        console.log("the imput is blured")
-        $("#user-list").show()
-        $("#search-box").hide()
-        $("#back-button").hide()
-        $("#search-box").children(".update-list").remove()
-    })
 
   chatButton.click(function () {
     if (chatInput.val().length > 0) {
@@ -348,39 +329,69 @@ $(document).ready(function () {
     console.log(e.data)
   };
 });
-function onSelectSearchedUser(selctedSearchedUser,selctedSearchedUserID,usrName){
-  $.post('/api/v1/member/add/', {
-    creator: currentUserID,
-    friends: selctedSearchedUserID
-  }).fail(function () {
-    alert('Error! Check console!');
-  });
+function onSelectSearchedUser(username){
+    console.log("the user selected")
   
-  setCurrentRecipient(selctedSearchedUser,usrName)
+   
+    $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
+       const selctedSearchedUserID = data[0]['id']
+       const username_eng=data[0]['username_eng']
+        console.log(selctedSearchedUserID)
+        setCurrentRecipient(username,username_eng)
+        currentRecipientName=username_eng
+
+            $.post('/api/v1/member/add/', {
+                creator: currentUserID,
+                friends: selctedSearchedUserID
+            }).fail(function () {
+                alert('Error! Check console!');
+            });
   
-  $("#user-list").show()
-  $("#search-box").hide()
-  $("#back-button").hide()
-  $("#search-box").children(".update-list").remove()
-  searchInput.val('')
+})
+
   
 }
+// //   $("#user-list").show()
+
+  
+  
+  
+// }
+// function onSelectSearchedUser(value){
+//     console.log(value);
+// }
+
+// $(document).on('change', "#draw-search-list", function(){
+//     // alert($(this).val())
+   
+// });
 
 
-function drawSearchedUser(user){
-  $.getJSON(`/api/v1/usersearch/?search_user=${user}`, function (data) {
+
+searchInput.click(function(){
+    drawSearchedUser()
+   
+})
+
+function drawSearchedUser(){
+    // $("#draw-search-list").children('.remove-child').remove();
+  $.getJSON(`/api/v1/usersearch/`, function (data) {
       console.log(data)
-    for(let i=0;i<=data.length;i++)
+      $("#draw-search-list").children('.remove-child').remove();
+    
+    for(let i=0;i<=data.length-1;i++)
     {
         let user=String(data[i]["username_eng"])
-      const searchedUser=`<a href="#" class="list-group-item list-group-item-action update-list" onclick=onSelectSearchedUser('${data[i]["username"]}','${data[i]["id"]}','${encodeURIComponent(user)}')>${data[i]["username_eng"]}</a>`
-      $(searchedUser).appendTo('#search-box');
+        const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
+        
+
+       $(searchedUser).appendTo('#draw-search-list');
     }
 
-    console.log(data)
+
 
   });
-  console.log(user)
+  
 
 
 

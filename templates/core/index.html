@@ -21,7 +21,7 @@
             <aside class="asideBarWrapper border-right h-100">
                 <div class="px-2">
                     <div class="aside-header-wrapper">
-                        <div class="d-flex align-items-center justify-content-between header">
+                        <div class="d-flex align-items-center justify-content-between header" id="user-profile">
                             <h1 class="mb-0">Charts</h1>
                             <div class="btn-group">
                                 <button type="button" class="btn p-0 border-0 font-lg header-action-button bg-none"
@@ -32,22 +32,28 @@
                                     <a class="dropdown-item" href="#">Another action</a>
                                     <a class="dropdown-item" href="#">Something else here</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
+                                    <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="messenger-friend-search">
-                        <div class="input-group">
-                            <!-- <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1"><i class="fal fa-search"></i></span>
+                    <div id="search-input">
+                        <div class="" > 
+                        {% comment %} messenger-friend-search {% endcomment %}
+                            <div class="input-group">
+                                {% comment %} <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fal fa-search"></i></span>
+                                </div>
+                                <input id="search-input" type="text" class="form-control" placeholder="Search" aria-label="Username"
+                                    aria-describedby="basic-addon1">  {% endcomment %}
+                                <select onchange="onSelectSearchedUser(value)" id="draw-search-list" class="js-example-basic-single" name="state" placeholder="Search User" >
+                                    
+                                     <option value="ttt" disabled selected hidden>Please Choose...</option>
+                                     
+                                     
+                                
+                                </select>
                             </div>
-                            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
-                                aria-describedby="basic-addon1"> -->
-                            <select class="js-example-basic-single" name="state">
-                                <option value="AL">Alabama</option>
-                                <option value="WY">Wyoming</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -62,8 +68,8 @@
                     <div class="d-flex  align-items-center justify-content-between p-2  border-bottom">
                         <div class="d-flex align-items-center">
                             <img src="{%static 'img/user-img.png' %}" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
-                            <div>
-                                <h4 class="user-title m-0">Tappware Solution Ltd.</h4>
+                            <div id="receiver">
+                                <h4 class="user-title m-0">Welcome to Nothi-Chat system</h4>
                                 <span class="font-size-12">Active Now</span>
                             </div>
                         </div>
