@@ -36,8 +36,9 @@ function handleFile(e) {
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
    
+    console.log(username_eng)
     setCurrentRecipient(user,username_eng)
-    // console.log(user)
+     console.log(username_eng)
 
     getSharedFiles(user)
    
@@ -87,20 +88,18 @@ function updateUserList() {
             const userItem =
             `
             <div id="selectUser"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
-            <a href='#' style="text-decoration: none; " class="p-3 my-3">
-                        <div class="row">
-                            <div class="col-md-4 col-sm-2 " style="text-align:right;" >
-                                <img src="https://randomuser.me/api/portraits/women/86.jpg" alt="Avatar" alt="user" width="50" class="rounded-circle " >
-                            </div>
-                            <div class="col-md-8 user-name-block">
-                                <p style="margin: 0px" class="text-dark text-capitalize">${data[i]['username_eng']}</p>
-                                <span class="text-muted">The messages are ...</span>
-                                
-                
-                                
+                    <li class="media align-items-center px-1 active py-2">
+                        <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
+                        <div class="media-body">
+                            <div>
+                                <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                <div class="flex align-items-center">
+                                    <span>you: this is demo</span>
+                                    <span>35m</span>
+                                </div>
                             </div>
                         </div>
-                </a>
+                    </li>
           
           </div>
           `
@@ -152,36 +151,34 @@ function drawMessage(message) {
         body=message.body
     }
     if (message.user === currentUser) {
-         const messageItem= `  <div class="row message">
-         <div class="d-flex flex-row-reverse  w-50 ml-auto " style="margin-left: auto;">
-          
-             <div class="p-2">
-                 <span class="text-muted" style="font-size: 14px;">${message.user} 11|12 pm</span>
-                 <p class="sender-color p-2 receiver-color" style="margin: 0px;">${body}</p>
-             </div>
-             
-             
-         </div>
-     </div>`
+         const messageItem= `  
+                             <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
+                                <div class="media sending">
+                                    <div class="media-body text-right">
+                                        <span class="font-size-12 mb-0 color-gray">Fri 14:24</span>
+                                        <div class="msg-text text-left">
+                                          ${body}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+         
+         `
       $(messageItem).appendTo('#message-list');
     }
     else{
          const messageItem=
-     `  <div class="row message">
-                                       
-                                        
-                                            <div class="d-flex flex-row  mb-3  w-50">
-                                                <div class="p-2 bd-highlight">
-                                                    <img src="https://randomuser.me/api/portraits/women/86.jpg" alt="Avatar" alt="user" width="50" class="rounded-circle">
-                                                </div>
-                                                <div class="p-2 ">
-                                                    <span class="text-muted" style="font-size: 14px;">${message.user} 11|12 pm</span>
-                                                    <p class="sender-color p-2" style="margin: 0px">${message.body}</p>
-                                                </div>
-                                                
-                                                
-                                            </div>
-                                    </div>
+     `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
+                 <div class="media comming">
+                  <img src="{%static 'img/user-img.png' %}" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
+                    <div class="media-body">
+                      <span class="font-size-12 mb-0 color-gray">Niton, Fri 14:24</span>
+                        <div  class="msg-text">
+                                ${body}
+                 </div>
+                 </div>
+                </div>
+            </li>
          `
     $(messageItem).appendTo('#message-list');
     }
@@ -256,9 +253,9 @@ function  uploadFile(recipient, body,file) {
 function setCurrentRecipient(username,username_eng) {
     // console.log(contactProfile);
     
-    username_tag = contactProfile.getElementsByTagName('h3')[0]
+    // username_tag = contactProfile.getElementsByTagName('h3')[0]
     // console.log(b[0].innerText);
-    username_tag.innerText = username_eng
+    // username_tag.innerText = username_eng
     currentRecipient = username;
     // console.log(username);
     getConversation(currentRecipient);
@@ -291,15 +288,17 @@ $(document).ready(function () {
     $("#search-box").hide()
     $("#back-button").hide()
     
-    userProfile.getElementsByTagName('h4')[0].innerText=currentUserName
+    // userProfile.getElementsByTagName('h4')[0].innerText=currentUserName
 //    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
     var socket = new WebSocket(
         'ws://' + window.location.host +
         '/ws?session_key=${sessionKey}')
         // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
     chatInput.keypress(function (e) {
-        // console.log(chatInput.val());
+        console.log(chatInput.val());
         if (e.keyCode == 13)
+            // console.log("enter pressed")
+
             chatButton.click();
     });
     searchInput.keypress(function(e){

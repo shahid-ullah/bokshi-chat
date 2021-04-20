@@ -1,0 +1,91 @@
+#chatWrapper{
+    width: 100%;
+    .header-action-button{
+        background: transparent;
+        color: #0084ff;   
+     }
+     .header-action-button:hover{
+         background: transparent;
+         color: #0084ff;
+     }
+     .user-title{
+         font-size: 1.0625rem;
+         word-wrap: break-word;
+         font-weight: 600;
+         color: #050505;
+     }
+     .chat-text-show-wrapper{
+         height: calc(100% - 135px);
+         overflow-y: auto;
+         .media{
+             &.comming{
+                width: calc(55% - 50px);
+                .media-body{
+                    .msg-text{
+                        background-color: rgba(0, 141, 253, 25%);
+                        color: #000000;
+                        font-size: 14px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        position: relative;
+                        border-top-left-radius: 0px;
+                        &::before{
+                            height: 20px;
+                            width: 20px;
+                            content: '';
+                            background-color: rgba(0, 141, 253, 0.25);
+                            position: absolute;
+                            left: -20px;
+                            top: -1px;
+                            transform: rotate(180deg);
+                            z-index: -1;
+                            clip-path: polygon(50% 46%, 0 0, 0 88%);
+                        }
+                    }
+                }
+             }
+             &.sending{
+                width: calc(55% - 50px);
+                .media-body{
+                    .msg-text{
+                        background-color: rgba(0, 188, 212, 25%);
+                        font-size: 14px;
+                        padding: 10px;
+                        border-radius: 5px;
+                    }
+                }
+             }
+         }
+     }
+     .chat-input-wrapper{
+        .input-group-text{
+            border: none;
+            border-top-right-radius: 1.25rem;
+            border-bottom-right-radius: 1.25rem;
+            background-color: #F0F2F5;
+        }
+        .form-control{
+            background-color: #F0F2F5;
+            border-top-left-radius: 1.25rem;
+            border-bottom-left-radius: 1.25rem;
+            border: none;
+            &:focus{
+                box-shadow:none;
+            }
+        }
+    }
+    .emoji-btn{
+        cursor: pointer;
+        i{
+            color: #737373;
+            font-size: 22px;
+            &.active{
+                color: #0084ff;
+            }
+        }
+    }
+}
+.font-size-12{
+    font-size: 12px;
+}
+

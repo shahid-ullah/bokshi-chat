@@ -101,7 +101,7 @@ ASGI_APPLICATION = 'chat.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DJANGO_DB_NAME', 'chat_v2'),
+        'NAME': os.environ.get('DJANGO_DB_NAME', 'tappware_chat'),
         'USER': os.environ.get('DJANGO_DB_USER', 'root'),
         'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', ''),
         'HOST': os.environ.get('DJANGO_DB_HOST', '127.0.0.1'),

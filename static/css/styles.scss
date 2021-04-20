@@ -1,0 +1,35 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,900&display=swap');
+*{
+    font-family: 'Roboto', sans-serif;
+}
+
+@import 'aside.scss';
+@import 'chats.scss';
+
+.color-gray{
+    color: #a7a7a7;
+}
+#emojis{
+    position: absolute;
+    right: 30px;
+    bottom: 70px;
+    display: none;
+    box-shadow: 0 0.1rem 1rem 0.25rem rgba(0,0, 0,8%);
+    .emoji-picker {
+        background-color: #ffffff;
+        max-width: 300px;
+        width: 100%;
+        margin: 0;
+        border-radius: 5px;
+        height: 100%;
+        max-height: 270px;
+        display: flex;
+    }
+    .emoji-selectables{
+        background-color: #f3f3f3;
+    }
+}

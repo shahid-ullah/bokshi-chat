@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Bokshi chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.min.css' %}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/select2.min.css' %}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/emojis.css' %}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/jquery.fancybox.css' %}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/styles.css' %}" />
+        <script src="https://kit.fontawesome.com/b1eb6b9fd3.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <!--main section start--->
+        <section id="main" class="d-flex align-start h-100">
+            <aside class="asideBarWrapper border-right h-100">
+                <div class="px-2">
+                    <div class="aside-header-wrapper">
+                        <div class="d-flex align-items-center justify-content-between header">
+                            <h1 class="mb-0">Charts</h1>
+                            <div class="btn-group">
+                                <button type="button" class="btn p-0 border-0 font-lg header-action-button bg-none"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                        class="fas fa-exclamation-circle fa-lg text-primary"></i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="messenger-friend-search">
+                        <div class="input-group">
+                            <!-- <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1"><i class="fal fa-search"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                                aria-describedby="basic-addon1"> -->
+                            <select class="js-example-basic-single" name="state">
+                                <option value="AL">Alabama</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="messenger-user-list-wrapper mt-3">
+                    <ul id="user-list" class="list-unstyled">
+                    
+                    </ul>
+                </div>
+            </aside>
+            <div id="chatWrapperOuter" class="d-flex align-items-start w-100 h-100">
+                <div id="chatWrapper" class="h-100">
+                    <div class="d-flex  align-items-center justify-content-between p-2  border-bottom">
+                        <div class="d-flex align-items-center">
+                            <img src="{%static 'img/user-img.png' %}" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
+                            <div>
+                                <h4 class="user-title m-0">Tappware Solution Ltd.</h4>
+                                <span class="font-size-12">Active Now</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn p-0 border-0 font-lg header-action-button"
+                                data-toggle="collapse" data-target="#collapseSidebar"><i
+                                    class="fas fa-exclamation-circle fa-lg"></i></button>
+                        </div>
+                    </div>
+                    <div class="chat-text-show-wrapper mt-2 position-relative">
+                        <ul class="list-unstyled" id="message-list">
+                            
+                        </ul>
+                    </div>
+                    <div class="chat-input-wrapper py-3 px-2 d-block position-relative">
+                        <div id="emojis"></div>
+                        <div class="input-group">
+                            <input type="text" id="chat-input" class="form-control" placeholder="Type your message" aria-label="Username" id="writeMsg" aria-describedby="basic-addon1">
+                              <div class="input-group-append">
+                                            <button  id="btn-send" id="btn-send" type="submit" class="btn btn-link" > <i class="fa fa-paper-plane"></i></button>
+                                </div>
+                             <div class="input-group-append">
+                                            <input type="file" id="FileUpload" style="display:none"/> 
+                                            <button id="OpenFileUpload" type="submit" class="btn btn-link" > 
+                                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                            </button>
+                            </div>
+                            <div class="input-group-prepend emoji-btn">
+                                <span class="input-group-text" id="basic-addon1"><i class="fas fa-smile"></i></span>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+                <aside id="collapseSidebar" class="asideBarWrapperInner border-left h-100 collapse show">
+                    <div class="">
+                        <div class="aside-header-wrapper border-bottom">
+                            <div class="d-flex align-items-center justify-content-between header ">
+                                <h1 class="mb-0 px-2">Shared Files</h1>
+                            </div>
+                        </div>
+                        <div class="shared-files-wrapper">
+                            <div class="d-flex align-items-start justify-content-start flex-wrap">
+                                <div class="col text-center p-3">
+                                    <a href="http://www.orimi.com/pdf-test.pdf" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-pdf text-danger fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                     <a href="#"><i class="fad fa-file-word text-primary fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                     <a href="#"><i class="fad fa-file-excel text-success fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                     <a href="https://imgd.aeplcdn.com/476x268/n/cw/ec/38904/mt-15-front-view.jpeg" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-image text-warning fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                    <a href="https://imgd.aeplcdn.com/476x268/n/cw/ec/38904/mt-15-front-view.jpeg" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-image text-warning fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                    <a href="#"><i class="fad fa-file-excel text-success fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                    <a href="#"><i class="fad fa-file-word text-primary fa-3x"></i></a>
+                                </div>
+                                <div class="col text-center p-3">
+                                    <a href="http://www.orimi.com/pdf-test.pdf" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-pdf text-danger fa-3x"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+        <!--main section end--->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script type="text/javascript" src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/select2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/DisMojiPicker.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.fancybox.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/custom.js' %} "></script>
+        <script type="text/javascript">
+            // In your Javascript (external .js resource or <script> tag)
+            $(document).ready(function() {
+                $('.js-example-basic-single').select2();
+                $('.select2-container').css('width', '100%');
+            });
+        </script>
+
+         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+ 
+        <script>
+        let sessionKey = '{{ request.session.session_key }}';
+        let currentUser = '{{ request.user.username }}';
+        let currentUserName = '{{ request.user.username_eng }}';
+
+
+        let currentUserID = '{{ request.user.id }}';
+        </script>
+        <script src="{% static 'js/app.js' %}"></script>
+    </body>
+    </body>
+
+</html>
