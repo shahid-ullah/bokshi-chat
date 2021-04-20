@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"  crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'updatedFE/index.css' %}">
+
+    <title>Bokshi Chat</title>
+</head>
+<body>
+    <!-- <section id="header">
+        <h2 class="display-5 text-center bg-light"> Bokshi CHat</h2>
+    </section> -->
+    <section id="chat-body">
+        <div class="row">
+  <!-- Side Panel -->
+            <!-- header start -->
+            <div   class="col-md-3 col-sm-12 side-panel user-header">
+                <div class="row header sticky-top ">
+                    <div class="row m-0">
+                     <div id="user-profile" class="col-md-12 ">
+                        <div class=" text-center d-flex flex-row  mb-3">
+                            <div class="p-2 bd-highlight">
+                                <img src="https://randomuser.me/api/portraits/women/86.jpg" alt="Avatar" alt="user" width="50" class="rounded-circle">
+                            </div>
+                            <div class="p-2 mt-3 overflow-auto">
+                                <h4 class="text-capitalize">User Name</h4>
+                              
+                            </div>
+                            <div>
+                                <button type="button" style="font-size: 20px;" class="p-2 mt-3 btn btn-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Create Group</a>
+                                    
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">Log Out</a>
+                                  </div>
+                            </div>
+                            
+                        </div>
+                     </div>
+                    </div>
+                   
+                    <div class="row m-0">
+                        <div class="col-md-12 ">
+                            <div class="input-group mb-3">
+                                <i id="back-button" class="fa fa-arrow-left mt-2 mr-2 text-primary" aria-hidden="true"></i>
+                                <input id="search-input" type="text" class="form-control " placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                  <!-- <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                  </button> -->
+                                </div>
+                               
+                              </div>
+                              <div id="search-box" class="list-group">
+                                    
+                            </div>
+
+                            
+                        </div>
+                      
+                    </div>
+                     
+                            
+                </div>
+            <!-- header start -->
+
+            <!-- User List Start -->
+            <div id="user-list" class="row user-list"style="overflow-y:scroll">
+          
+            </div>
+                  
+
+                </div>
+            <!-- user list end -->
+ <!-- side panel over -->
+
+            
+            
+            
+
+                    <div  class="col-md-6 col-sm-12 chatting-box "  >
+                        
+                            <div id="receiver" class="row p-2 sticky-top bg-light" >
+                                <div class="col-md-12 " style="border-bottom: 1px solid gray;" >
+                                     <h3 class="p-2 text-primary text-capitalize">Welcome to Bokshi Chat</h3>
+                                     <!-- <hr> -->
+                                </div>
+
+                            </div>
+                            <div id="message-box">
+                                <div id="message-list">
+                                    
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-12 " >
+                                    
+                                    <form action="#" class="bg-light " style= "position: absolute;  bottom:4%;width:70%;">
+                                        <div class="input-group " >
+                                          <input  data-emoji-picker="true" id="chat-input" type="text" id="chat-input" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 ml-0 bg-light" style="height: 10px;">
+                                          <div class="input-group-append">
+                                            <button  id="btn-send" id="btn-send" type="submit" class="btn btn-link" > <i class="fa fa-paper-plane"></i></button>
+                                          </div>
+                                          <div class="input-group-append">
+                                            <input type="file" id="FileUpload" style="display:none"/> 
+                                            <button id="OpenFileUpload" type="submit" class="btn btn-link" > 
+                                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </form>
+                                    
+                                 
+                                </div>
+                               
+                                
+                            </div>
+
+                           
+                        
+
+                    </div>
+                    <div class="col-md-3" id="file-section">
+                      <h4 class="text-center mt-3 p-5 text-info">Shared Files</h4>
+                      <div id="file_sharing">
+                        <div id="file_sharing" class="list-group">
+                         
+                          <!-- <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                          <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                          <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                          <a href="#" class="list-group-item list-group-item-action">Vestibulum at eros</a> -->
+                        </div>
+
+                      </div>
+                    </div>
+
+            
+        </div>
+ </section>
+    
+
+    
+
+
+
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+ <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+ 
+ <script>
+   let sessionKey = '{{ request.session.session_key }}';
+   let currentUser = '{{ request.user.username }}';
+   let currentUserName = '{{ request.user.username_eng }}';
+
+
+   let currentUserID = '{{ request.user.id }}';
+ </script>
+ <script src="{% static 'js/app.js' %}"></script>
+  <script src="{% static 'js/emojiPicker.js' %}"></script>
+  <script>
+    (() => {
+      new EmojiPicker()
+    })()
+  </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+</html>
