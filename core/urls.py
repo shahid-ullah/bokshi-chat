@@ -39,7 +39,7 @@ urlpatterns = [
     # path('group/', group_view, name='groups'),
     path(
         '',
-        login_required(TemplateView.as_view(template_name='core/index.html')),
+        login_required(TemplateView.as_view(template_name='core/index2.html')),
         name='home',
     ),
     # path(

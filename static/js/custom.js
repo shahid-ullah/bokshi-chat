@@ -67,8 +67,20 @@ function doGetCaretPosition (oField) {
 
 $("#writeMsg").keyup(function(){
   localStorage.setItem('cursor', doGetCaretPosition(this));
+  var val = $(this).val();
+  if(val.length  > 0){
+      $('.send-button').show();
+      $('.attachments-button-wrapper').children('.btn').removeClass('d-none');
+      $('.attachments-button-wrapper').children('label').hide();
+  }else{
+    $('.send-button').hide();
+    $('.attachments-button-wrapper').children('label').show();
+    $('.attachments-button-wrapper').children('.btn').addClass('d-none');
+  }
 });
-
+$('.attachments-button-wrapper').children('.btn').click(function(){
+    $('.attachments-button-wrapper').children('label').toggle();
+})
 
 $.fn.selectRange = function(start, end) {
     if(!end) end = start; 

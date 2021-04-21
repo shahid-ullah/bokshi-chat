@@ -146,16 +146,40 @@ html, body {
         border-radius: 5px; }
   #chatWrapper .chat-input-wrapper .input-group-text {
     border: none;
-    border-top-right-radius: 1.25rem;
-    border-bottom-right-radius: 1.25rem;
+    border-top-left-radius: 1.25rem;
+    border-bottom-left-radius: 1.25rem;
     background-color: #F0F2F5; }
   #chatWrapper .chat-input-wrapper .form-control {
     background-color: #F0F2F5;
-    border-top-left-radius: 1.25rem;
-    border-bottom-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    border-bottom-right-radius: 1.25rem;
     border: none; }
     #chatWrapper .chat-input-wrapper .form-control:focus {
       box-shadow: none; }
+  #chatWrapper .chat-input-wrapper .send-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: none; }
+  #chatWrapper .chat-input-wrapper .attachments-button-wrapper .btn {
+    background-color: transparent;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    padding: 9px; }
+  #chatWrapper .chat-input-wrapper .attachments-button-wrapper label {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; }
+  #chatWrapper .chat-input-wrapper .attachments-button-wrapper i {
+    color: #fff; }
   #chatWrapper .emoji-btn {
     cursor: pointer; }
     #chatWrapper .emoji-btn i {
@@ -172,8 +196,8 @@ html, body {
 
 #emojis {
   position: absolute;
-  right: 30px;
-  bottom: 70px;
+  left: 15px;
+  bottom: 65px;
   display: none;
   box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.08); }
   #emojis .emoji-picker {

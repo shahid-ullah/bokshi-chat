@@ -1,5 +1,5 @@
 let currentRecipient = '';
-let chatInput = $('#chat-input');
+let chatInput = $('.chat-input');
 let chatButton = $('#btn-send');
 let userList = $('#user-list');
 let messageList = $('#message-list');
@@ -12,7 +12,7 @@ let searchInput = $('#search-input')
 let fileSharing=$('#file_sharing')
 let fileSection=$('#file-section')
 let form_data = new FormData();
-$('#OpenFileUpload').click(function(){ console.log("upload icon triggered!!");  $('#FileUpload').trigger('click'); });
+$('#OpenFileUpload').click(function(){ console.log("upload icon triggered!!");            $('#FileUpload').trigger('click'); });
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
     
@@ -26,7 +26,7 @@ let currentRecipientName=null
 
 function handleFile(e) {
     uploadedFile = e.target.files[0];
-    // console.log(uploadedImg);
+    console.log("testitn refreshing");
     if(uploadedFile !=null){
         let body=null;
         uploadFile(currentRecipient,body,uploadedFile)
@@ -56,11 +56,42 @@ function getSharedFiles(user)
             if(data['results'][i]['files']!=null)
            { let fileName=data['results'][i]['files'].split("/")
              fileName=fileName[fileName.length-1]
-            const sharedItem=
-            `
-            <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action">${fileName}</a>
-            
-            `
+             let ext=fileName.split(".")
+             let image=['png',"jpg",'jpeg']
+             let doc=['doc','docx']
+             let excel=['xlsx','xlsm']
+             let pdf = ['pdf']
+             console.log(ext)
+             sharedItem=null
+             if(image.includes(ext[ext.length-1]))
+              {  sharedItem=
+                `
+                <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-image text-warning mx-3 fa-2x"></i>${fileName}</a>
+                
+                `
+              }
+              else if(doc.includes(ext[ext.length-1]))
+              {  sharedItem=
+                `
+                <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-word text-primary fa-2x mx-3"></i>${fileName}</a>
+                
+                `
+              }
+              else if(pdf.includes(ext[ext.length-1]))
+              {  sharedItem=
+                `
+                <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-pdf text-danger fa-2x mx-3"></i>${fileName}</a>
+                
+                `
+              }
+              else if(pdf.includes(ext[ext.length-1]))
+              {  sharedItem=
+                `
+                <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-excel text-success  fa-2x mx-3"></i>${fileName}</a>
+                
+                `
+              }
+              
             $(sharedItem).appendTo('#file_sharing');
            }
             
@@ -89,7 +120,7 @@ function updateUserList() {
             const userItem =
             `
             <div id="selectUser" class="user"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
-                    <li class="media align-items-center px-1 active py-2">
+                    <li class="media align-items-center px-1  py-2">
                         <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
                         <div class="media-body">
                             <div>
@@ -121,17 +152,27 @@ function updateUserList() {
 }
 
 // Receive one message and append it to message list
+
+
+$('#selectUser li').click(function(){
+    // $(this).addClass(active)
+    alert("tttt")
+})
+
+
 function drawMessage(message) {
 
     let date = new Date(message.timestamp);
-    const hour=date.getHours()
-    const minute=date.toLocaleString('en-US', { hour: 'numeric', hour12: true })
+    const minute=date.toLocaleString('en-US', { minute: 'numeric' })
+    const day=date.toLocaleString('en-US', { weekday: 'long'})
+
+    const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
     const second=date.getSeconds()
-    const day=date.getDay()
+    // const day=date.getDay()
     const month=date.toLocaleString('default', { month: 'long' })
     
     
-    console.log("the hour is ",hour)
+ 
 
     // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     // date=date.toLocaleDateString("en-US")
@@ -156,7 +197,7 @@ function drawMessage(message) {
                              <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
                                 <div class="media sending">
                                     <div class="media-body text-right">
-                                        <span class="font-size-12 mb-0 color-gray">Fri 14:24</span>
+                                        <span class="font-size-12 mb-0 color-gray">${day} ${hour}</span>
                                         <div class="msg-text text-left">
                                           ${body}
                                         </div>
@@ -173,7 +214,7 @@ function drawMessage(message) {
                  <div class="media comming">
                   <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
                     <div class="media-body">
-                      <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, Fri 14:24</span>
+                      <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, ${day} ${hour}</span>
                         <div  class="msg-text">
                                 ${body}
                  </div>
@@ -239,15 +280,7 @@ function  uploadFile(recipient, body,file) {
     })
         .then(response => console.log(response))
    
-    // $.post('/api/v1/message/', {
-    //     recipient: recipient,
-    //     body: body,
-    //     image:img
-    // }).fail(function () {
-    //     alert('Error! Check console!');
-    // });
-    
-    userList.children('.user').remove()
+
 }
 
 // set clicked user as currentRecipient
