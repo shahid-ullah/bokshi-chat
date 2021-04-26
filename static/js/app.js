@@ -12,7 +12,7 @@ let searchInput = $('#search-input')
 let fileSharing=$('#file_sharing')
 let fileSection=$('#file-section')
 let form_data = new FormData();
-$('#OpenFileUpload').click(function(){ console.log("upload icon triggered!!");            $('#FileUpload').trigger('click'); });
+$('#OpenFileUpload').click(function(){$('#FileUpload').trigger('click'); });
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
     
@@ -24,9 +24,10 @@ document.getElementById('FileUpload').addEventListener('change', handleFile);
 
 let currentRecipientName=null
 
+
 function handleFile(e) {
     uploadedFile = e.target.files[0];
-    console.log("testitn refreshing");
+    
     if(uploadedFile !=null){
         let body=null;
         uploadFile(currentRecipient,body,uploadedFile)
@@ -36,10 +37,10 @@ function handleFile(e) {
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
    
-    console.log(username_eng)
+    
     currentRecipientName=username_eng
     setCurrentRecipient(user,username_eng)
-     console.log(username_eng)
+   
 
     getSharedFiles(user)
    
@@ -49,7 +50,7 @@ function getSharedFiles(user)
 {
     $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
         fileSharing.children('.shared').remove();
-        console.log("the get api data is ",data)
+       
         
         for (let i = data['results'].length - 1; i >= 0; i--) {
             
@@ -61,7 +62,7 @@ function getSharedFiles(user)
              let doc=['doc','docx']
              let excel=['xlsx','xlsm']
              let pdf = ['pdf']
-             console.log(ext)
+            
              sharedItem=null
              if(image.includes(ext[ext.length-1]))
               {  sharedItem=
@@ -105,7 +106,7 @@ function getSharedFiles(user)
         }
 
     });
-    console.log("user selected", user)
+    
 }
 function addFilesFromSocket(file,fileName){
     const sharedItem=
@@ -119,8 +120,7 @@ function addFilesFromSocket(file,fileName){
 function updateUserList() {
     $.getJSON('api/v1/members/', function (data) {
         userList.children('.user').remove();
-        console.log(data)
-
+      
         for (let i = 0; i < data.length; i++) {
             // const userItem = `<li class="contact">${data[i]['username']}</li>`;
 
@@ -184,20 +184,19 @@ function drawMessage(message) {
     // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     // date=date.toLocaleDateString("en-US")
 
-    // console.log(date.toLocaleDateString("en-US")); // 9/17/2016
-    // console.log(today.toLocaleDateString("en-US", options)); // Saturday, September 17, 2016
-    // console.log(today.toLocaleDateString("hi-IN", options)); 
+
     let body=null;
     if(message.body==="null"){
         var fileName=message.files.split("/");
         fileName=fileName[fileName.length-1]
 
         body=`<a href=${message.files} target="_blank" >${fileName}</a>`
-        // console.log("the image is ", message.image)
+      
         addFilesFromSocket(message.files,fileName )
     }
     else{
         body=message.body
+        body=decrypt(body,currentUser)
     }
     if (message.user === currentUser) {
          const messageItem= `  
@@ -234,7 +233,7 @@ function drawMessage(message) {
 
 
     // $(messageItem).appendTo('#message-list');
-    // console.log(currentUser)
+   
 
 }
 
@@ -271,10 +270,9 @@ function  uploadFile(recipient, body,file) {
     form_data.append("files", file);
     form_data.append("recipient",recipient)
     form_data.append("body",body)
-    console.log(form_data.get("body"))
     
-    console.log(form_data.get("recipient"))
-
+    
+    
 
 
 
@@ -285,7 +283,7 @@ function  uploadFile(recipient, body,file) {
             "Content-Type": "multipart/form-data"
         }
     })
-        .then(response => console.log(response))
+        .then(response => console.log(""))
    
 
 }
@@ -293,14 +291,13 @@ function  uploadFile(recipient, body,file) {
 // set clicked user as currentRecipient
 // get all conversation of currentRecipient or currentUser
 function setCurrentRecipient(username,username_eng) {
-    // console.log(contactProfile);
+   
     
     username_tag = contactProfile.getElementsByTagName('h4')[0]
-    // console.log(b[0].innerText);
-    console.log("the searched user is",username_eng)
+  
     username_tag.innerText = username_eng
     currentRecipient = username;
-    // console.log(username);
+   
     getConversation(currentRecipient);
     enableInput();
 }
@@ -337,21 +334,25 @@ $(document).ready(function () {
         '/ws?session_key=${sessionKey}')
         // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
     chatInput.keypress(function (e) {
-        console.log(chatInput.val());
+        
         if (e.keyCode == 13)
-            // console.log("enter pressed")
+          
 
             chatButton.click();
     });
   
    
-
-
+  
+   
   chatButton.click(function () {
     if (chatInput.val().length > 0) {
-        // console.log((currentRecipient));
-        const body= chatInput.val();
+        
+      let body= chatInput.val();
       //   sendMessage(currentRecipient, chatInput.val(), image);
+        body = encrypt(body,currentUser);
+        
+    //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
+
         chatInput.val('');
          $.post('/api/v1/message/', {
           recipient: currentRecipient,
@@ -366,17 +367,17 @@ $(document).ready(function () {
   // Receive message from websocket
   socket.onmessage = function (e) {
     getMessageById(e.data);
-    console.log(e.data)
+   
   };
 });
 function onSelectSearchedUser(username){
-    console.log("the user selected")
+
   
    
     $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
        const selctedSearchedUserID = data[0]['id']
        const username_eng=data[0]['username_eng']
-        console.log(selctedSearchedUserID)
+        
         setCurrentRecipient(username,username_eng)
         currentRecipientName=username_eng
 
@@ -391,20 +392,6 @@ function onSelectSearchedUser(username){
 
   
 }
-// //   $("#user-list").show()
-
-  
-  
-  
-// }
-// function onSelectSearchedUser(value){
-//     console.log(value);
-// }
-
-// $(document).on('change', "#draw-search-list", function(){
-//     // alert($(this).val())
-   
-// });
 
 
 
@@ -416,7 +403,7 @@ searchInput.click(function(){
 function drawSearchedUser(){
     // $("#draw-search-list").children('.remove-child').remove();
   $.getJSON(`/api/v1/usersearch/`, function (data) {
-      console.log(data)
+     
       $("#draw-search-list").children('.remove-child').remove();
     
     for(let i=0;i<=data.length-1;i++)
@@ -436,6 +423,15 @@ function drawSearchedUser(){
 
 
 }
+
+function decrypt(data, key) {
+    return CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
+ }
+
+ function encrypt(data, key) {
+    return CryptoJS.AES.encrypt(data, key).toString();
+ }
+ 
 
 // for testing
 // const userItem = `<li class="contact">
