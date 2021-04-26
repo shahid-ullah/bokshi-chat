@@ -47,12 +47,12 @@ function onSelectUser(user,username_eng){
 
 function getSharedFiles(user)
 {
-    $.getJSON(`/api/v1/message/?target=${user}`, function (data) {
+    $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
         fileSharing.children('.shared').remove();
-
+        console.log("the get api data is ",data)
         
         for (let i = data['results'].length - 1; i >= 0; i--) {
-            console.log()
+            
             if(data['results'][i]['files']!=null)
            { let fileName=data['results'][i]['files'].split("/")
              fileName=fileName[fileName.length-1]
@@ -88,6 +88,13 @@ function getSharedFiles(user)
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-excel text-success  fa-2x mx-3"></i>${fileName}</a>
+                
+                `
+              }
+              else 
+              {  sharedItem=
+                `
+                <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file text-success  fa-2x mx-3"></i>${fileName}</a>
                 
                 `
               }
