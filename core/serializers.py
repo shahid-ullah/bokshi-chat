@@ -59,3 +59,8 @@ class ChatGroupMessageDetailSerializer(ModelSerializer):
     class Meta:
         model = ChatGroupMessage
         fields = "__all__"
+
+class FileSerializer(ModelSerializer):
+    class Meta:
+        model = MessageModel
+        fields = ('id', 'files')

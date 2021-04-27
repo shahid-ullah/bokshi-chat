@@ -17,9 +17,10 @@ from core.serializers import (ChatGroupDetailSerializer,
                               ChatGroupMessageDetailSerializer,
                               ChatGroupMessageSerializer, ChatGroupSerializer,
                               MessageModelSerializer,
-                              RelationshipModelSerializer, UserModelSerializer)
+                              RelationshipModelSerializer, UserModelSerializer,FileSerializer)
 
 from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
 User = get_user_model()
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     """
@@ -218,3 +219,34 @@ class SearchUserListAPI(mixins.ListModelMixin, generics.GenericAPIView):
             self.queryset = self.queryset.filter(username=query_text)
         self.queryset = self.queryset.exclude(id=request.user.id)
         return super(SearchUserListAPI, self).list(request, *args, **kwargs)
+
+
+class GetFilesAPI(mixins.ListModelMixin, generics.GenericAPIView):
+    queryset = MessageModel.objects.values_list('files')
+    queryset = MessageModel.objects.all()
+    serializer_class = FileSerializer
+    parser_classes=[parsers.FormParser,parsers.MultiPartParser]
+    allowed_methods = ('GET')
+    authentication_classes = (
+        CsrfExemptSessionAuthentication,
+        TokenAuthentication,
+    )
+    # authentication_classes = (CsrfExemptSessionAuthentication,)
+    
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        self.queryset = self.queryset.filter(
+            Q(recipient=request.user) | Q(user=request.user)
+        )
+        target = self.request.query_params.get('target', None)
+        # if group_name is not None:
+        #     self.queryset = self.queryset.filter()
+        if target is not None:
+            self.queryset = self.queryset.filter(
+                Q(recipient=request.user, user__username=target)
+                | Q(recipient__username=target, user=request.user)
+            )
+        return super(GetFilesAPI, self).list(request, *args, **kwargs)
