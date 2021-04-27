@@ -1,26 +1,25 @@
 # core/api.py
 
 # from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, mixins, status
+from rest_framework import generics, mixins, parsers, status, viewsets
 from rest_framework.authentication import (SessionAuthentication,
                                            TokenAuthentication)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import parsers,viewsets
 
 from chat import settings
 from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
 from core.serializers import (ChatGroupDetailSerializer,
                               ChatGroupMessageDetailSerializer,
                               ChatGroupMessageSerializer, ChatGroupSerializer,
-                              MessageModelSerializer,
-                              RelationshipModelSerializer, UserModelSerializer,FileSerializer)
+                              FileSerializer, MessageModelSerializer,
+                              RelationshipModelSerializer, UserModelSerializer)
 
-from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
 User = get_user_model()
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     """
@@ -170,8 +169,8 @@ class MemberListView(mixins.ListModelMixin, generics.GenericAPIView):
 
     def list(self, request, *args, **kwargs):
         # breakpoint()
-        friends = request.user.friendship_creator_set.values('friends').distinct()
-        friend_ids = [fr.get('friends') for fr in friends]
+        friends = request.user.friend_list.values('friend').distinct()
+        friend_ids = [fr.get('friend') for fr in friends]
         self.queryset = self.queryset.filter(id__in=friend_ids)
         self.queryset = self.queryset.exclude(id=request.user.id)
         return super(MemberListView, self).list(request, *args, **kwargs)
@@ -188,19 +187,38 @@ class AddMembershipAPI(mixins.CreateModelMixin, generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         # breakpoint()
-        friend_id = request.POST.get('friends', None)
+        creator_id = request.POST.get('creator', None)
+        friend_id = request.POST.get('friend', None)
+
+        # check friendship creation with same user
+        if creator_id is not None and friend_id is not None:
+            if creator_id == friend_id:
+                return Response(
+                    'same user',
+                    status=status.HTTP_200_OK,
+                )
+        # check existing friendship
         try:
             if friend_id is not None:
                 friend_id = int(friend_id)
                 query_result = Relationship.objects.filter(
-                    creator_id=request.user.id, friends__id=friend_id
+                    creator_id=request.user.id, friend__id=friend_id
                 )
                 if query_result:
                     return Response(
                         'Already user exists', status=status.HTTP_201_CREATED
                     )
-        except:
+        except Exception as e:
             pass
+
+        # create reverse friendship > friend to me
+        if friend_id is not None:
+            try:
+                creator = self.request.user
+                friend = User.objects.get(id=friend_id)
+                Relationship.objects.create(creator=friend, friend=creator)
+            except Exception as e:
+                pass
         # breakpoint()
         return self.create(request, *args, **kwargs)
 
@@ -232,7 +250,7 @@ class GetFilesAPI(mixins.ListModelMixin, generics.GenericAPIView):
         TokenAuthentication,
     )
     # authentication_classes = (CsrfExemptSessionAuthentication,)
-    
+
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

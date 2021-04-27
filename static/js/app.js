@@ -15,7 +15,7 @@ let form_data = new FormData();
 $('#OpenFileUpload').click(function(){$('#FileUpload').trigger('click'); });
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
-    
+
 //     });
 
 let selectedUserName = null
@@ -27,7 +27,7 @@ let currentRecipientName=null
 
 function handleFile(e) {
     uploadedFile = e.target.files[0];
-    
+
     if(uploadedFile !=null){
         let body=null;
         uploadFile(currentRecipient,body,uploadedFile)
@@ -36,24 +36,24 @@ function handleFile(e) {
 
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
-   
-    
+
+
     currentRecipientName=username_eng
     setCurrentRecipient(user,username_eng)
-   
+
 
     getSharedFiles(user)
-   
+
 }
 
 function getSharedFiles(user)
 {
     $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
         fileSharing.children('.shared').remove();
-       
-        
+
+
         for (let i = data['results'].length - 1; i >= 0; i--) {
-            
+
             if(data['results'][i]['files']!=null)
            { let fileName=data['results'][i]['files'].split("/")
              fileName=fileName[fileName.length-1]
@@ -62,57 +62,57 @@ function getSharedFiles(user)
              let doc=['doc','docx']
              let excel=['xlsx','xlsm']
              let pdf = ['pdf']
-            
+
              sharedItem=null
              if(image.includes(ext[ext.length-1]))
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-image text-warning mx-3 fa-2x"></i>${fileName}</a>
-                
+
                 `
               }
               else if(doc.includes(ext[ext.length-1]))
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-word text-primary fa-2x mx-3"></i>${fileName}</a>
-                
+
                 `
               }
               else if(pdf.includes(ext[ext.length-1]))
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-pdf text-danger fa-2x mx-3"></i>${fileName}</a>
-                
+
                 `
               }
               else if(pdf.includes(ext[ext.length-1]))
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-excel text-success  fa-2x mx-3"></i>${fileName}</a>
-                
+
                 `
               }
-              else 
+              else
               {  sharedItem=
                 `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file text-success  fa-2x mx-3"></i>${fileName}</a>
-                
+
                 `
               }
-              
+
             $(sharedItem).appendTo('#file_sharing');
            }
-            
+
         }
 
     });
-    
+
 }
 function addFilesFromSocket(file,fileName){
     const sharedItem=
             `
             <a href="${file}" target="_blank" class="shared list-group-item list-group-item-action">${fileName}</a>
-            
+
             `
             $(sharedItem).appendTo('#file_sharing');
 }
@@ -120,7 +120,7 @@ function addFilesFromSocket(file,fileName){
 function updateUserList() {
     $.getJSON('api/v1/members/', function (data) {
         userList.children('.user').remove();
-      
+
         for (let i = 0; i < data.length; i++) {
             // const userItem = `<li class="contact">${data[i]['username']}</li>`;
 
@@ -139,7 +139,7 @@ function updateUserList() {
                             </div>
                         </div>
                     </li>
-          
+
           </div>
           `
             $(userItem).appendTo('#user-list');
@@ -177,9 +177,9 @@ function drawMessage(message) {
     const second=date.getSeconds()
     // const day=date.getDay()
     const month=date.toLocaleString('default', { month: 'long' })
-    
-    
- 
+
+
+
 
     // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     // date=date.toLocaleDateString("en-US")
@@ -191,7 +191,7 @@ function drawMessage(message) {
         fileName=fileName[fileName.length-1]
 
         body=`<a href=${message.files} target="_blank" >${fileName}</a>`
-      
+
         addFilesFromSocket(message.files,fileName )
     }
     else{
@@ -199,7 +199,7 @@ function drawMessage(message) {
         body=decrypt(body,currentUser)
     }
     if (message.user === currentUser) {
-         const messageItem= `  
+         const messageItem= `
                              <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
                                 <div class="media sending">
                                     <div class="media-body text-right">
@@ -210,7 +210,7 @@ function drawMessage(message) {
                                     </div>
                                 </div>
                             </li>
-         
+
          `
       $(messageItem).appendTo('#message-list');
     }
@@ -233,7 +233,7 @@ function drawMessage(message) {
 
 
     // $(messageItem).appendTo('#message-list');
-   
+
 
 }
 
@@ -265,14 +265,14 @@ function getMessageById(message) {
 
 // Send message to messages api
 function  uploadFile(recipient, body,file) {
-   
+
     let form_data = new FormData();
     form_data.append("files", file);
     form_data.append("recipient",recipient)
     form_data.append("body",body)
-    
-    
-    
+
+
+
 
 
 
@@ -284,20 +284,20 @@ function  uploadFile(recipient, body,file) {
         }
     })
         .then(response => console.log(""))
-   
+
 
 }
 
 // set clicked user as currentRecipient
 // get all conversation of currentRecipient or currentUser
 function setCurrentRecipient(username,username_eng) {
-   
-    
+
+
     username_tag = contactProfile.getElementsByTagName('h4')[0]
-  
+
     username_tag.innerText = username_eng
     currentRecipient = username;
-   
+
     getConversation(currentRecipient);
     enableInput();
 }
@@ -325,8 +325,8 @@ $(document).ready(function () {
     updateUserList();
     disableInput();
     // $("#message-box").scrollTop($(document).height());
- 
-    
+
+
     userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
 //    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
     var socket = new WebSocket(
@@ -334,23 +334,23 @@ $(document).ready(function () {
         '/ws?session_key=${sessionKey}')
         // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
     chatInput.keypress(function (e) {
-        
+
         if (e.keyCode == 13)
-          
+
 
             chatButton.click();
     });
-  
-   
-  
-   
+
+
+
+
   chatButton.click(function () {
     if (chatInput.val().length > 0) {
-        
+
       let body= chatInput.val();
       //   sendMessage(currentRecipient, chatInput.val(), image);
         body = encrypt(body,currentUser);
-        
+
     //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
 
         chatInput.val('');
@@ -367,50 +367,50 @@ $(document).ready(function () {
   // Receive message from websocket
   socket.onmessage = function (e) {
     getMessageById(e.data);
-   
+
   };
 });
 function onSelectSearchedUser(username){
 
-  
-   
+
+
     $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
        const selctedSearchedUserID = data[0]['id']
        const username_eng=data[0]['username_eng']
-        
+
         setCurrentRecipient(username,username_eng)
         currentRecipientName=username_eng
 
             $.post('/api/v1/member/add/', {
                 creator: currentUserID,
-                friends: selctedSearchedUserID
+                friend: selctedSearchedUserID
             }).fail(function () {
                 alert('Error! Check console!');
             });
-  
+
 })
 
-  
+
 }
 
 
 
 searchInput.click(function(){
     drawSearchedUser()
-   
+
 })
 
 function drawSearchedUser(){
     // $("#draw-search-list").children('.remove-child').remove();
   $.getJSON(`/api/v1/usersearch/`, function (data) {
-     
+
       $("#draw-search-list").children('.remove-child').remove();
-    
+
     for(let i=0;i<=data.length-1;i++)
     {
         let user=String(data[i]["username_eng"])
         const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
-        
+
 
        $(searchedUser).appendTo('#draw-search-list');
     }
@@ -418,7 +418,7 @@ function drawSearchedUser(){
 
 
   });
-  
+
 
 
 
@@ -431,7 +431,7 @@ function decrypt(data, key) {
  function encrypt(data, key) {
     return CryptoJS.AES.encrypt(data, key).toString();
  }
- 
+
 
 // for testing
 // const userItem = `<li class="contact">

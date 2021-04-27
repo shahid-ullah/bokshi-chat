@@ -115,8 +115,8 @@ class ChatGroupMessage(models.Model):
 class Relationship(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     creator = models.ForeignKey(
-        AUTH_USER_MODEL, related_name="friendship_creator_set", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, related_name="friend_list", on_delete=models.CASCADE
     )
-    friends = models.ForeignKey(
-        AUTH_USER_MODEL, related_name="friend_set", on_delete=models.CASCADE
+    friend = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="friend_set", on_delete=models.CASCADE
     )
