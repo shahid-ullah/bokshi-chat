@@ -196,16 +196,20 @@ function drawMessage(message) {
     }
     else{
         body=message.body
-        body=decrypt(body,currentUser)
+        console.log(body)
+        // body=decrypt(body,"123")
+        console.log(body)
+
     }
     if (message.user === currentUser) {
+        // console.log("from current user body",body)
          const messageItem= `  
                              <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
                                 <div class="media sending">
                                     <div class="media-body text-right">
                                         <span class="font-size-12 mb-0 color-gray">${day} ${hour}</span>
                                         <div class="msg-text text-left">
-                                          ${body}
+                                          ${decrypt(body,currentUser)}
                                         </div>
                                     </div>
                                 </div>
@@ -215,6 +219,8 @@ function drawMessage(message) {
       $(messageItem).appendTo('#message-list');
     }
     else{
+        // console.log("from current user body",body)
+
          const messageItem=
      `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
                  <div class="media comming">
@@ -222,7 +228,7 @@ function drawMessage(message) {
                     <div class="media-body">
                       <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, ${day} ${hour}</span>
                         <div  class="msg-text">
-                                ${body}
+                                ${decrypt(body,message.user)}
                  </div>
                  </div>
                 </div>
