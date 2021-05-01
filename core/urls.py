@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
 from core.api import (AddMembershipAPI, MemberListView, MessageModelViewSet,
-                      SearchUserListAPI, UserModelViewSet,GetFilesAPI)
+                      SearchUserListAPI, UserModelViewSet,GetFilesAPI,UserRemoveAPIView)
 
 # from .views import group_view
 
@@ -20,6 +20,8 @@ urlpatterns = [
     path('api/v1/member/add/', AddMembershipAPI.as_view(), name='members'),
     path('api/v1/usersearch/', SearchUserListAPI.as_view(), name='add_memeber'),
     path('api/v1/get-files/', GetFilesAPI.as_view(), name='add_memeber'),
+    path('api/v1/remove-user/', UserRemoveAPIView, name='remove_memeber'),
+
 
     # path('chat/groups/', ChatGroupView.as_view(), name='chat_groups'),
     # path('chat/<int:pk>/group/', ChatGroupDetailview.as_view(), name='chat_group'),

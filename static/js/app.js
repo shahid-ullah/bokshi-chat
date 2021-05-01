@@ -111,7 +111,7 @@ function getSharedFiles(user)
 function addFilesFromSocket(file,fileName){
     const sharedItem=
             `
-            <a href="${file}" target="_blank" class="shared list-group-item list-group-item-action">${fileName}</a>
+            <a href="${file}" target="_blank" class="shared list-group-item list-group-item-action fad fa-file">${fileName}</a>
             
             `
             $(sharedItem).appendTo('#file_sharing');
@@ -133,8 +133,7 @@ function updateUserList() {
                             <div>
                                 <h5 class="m-0">${data[i]['username_eng']}</h5>
                                 <div class="flex align-items-center">
-                                    <span>you: this is demo</span>
-                                    <span>35m</span>
+                                     <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
                                 </div>
                             </div>
                         </div>
@@ -161,10 +160,17 @@ function updateUserList() {
 // Receive one message and append it to message list
 
 
-$('#selectUser li').click(function(){
-    // $(this).addClass(active)
-    alert("tttt")
-})
+function removeUser(friend){
+    console.log(friend)
+    $.post('api/v1/remove-user/', {
+        creator: currentUser,
+        friend: friend
+        
+    }).fail(function () {
+        alert('Error! Check console!');
+    });
+ 
+}
 
 
 function drawMessage(message) {
@@ -195,9 +201,18 @@ function drawMessage(message) {
         addFilesFromSocket(message.files,fileName )
     }
     else{
-        body=message.body
-        console.log(body)
-        // body=decrypt(body,"123")
+         
+        if (message.user === currentUser){
+            body=message.body
+            body = decrypt(body,currentUser)
+        }
+        else 
+        {
+           body=message.body
+           body = decrypt(body,message.user)
+        }
+
+        console.log(body)  
         console.log(body)
 
     }
@@ -209,7 +224,7 @@ function drawMessage(message) {
                                     <div class="media-body text-right">
                                         <span class="font-size-12 mb-0 color-gray">${day} ${hour}</span>
                                         <div class="msg-text text-left">
-                                          ${decrypt(body,currentUser)}
+                                          ${body}
                                         </div>
                                     </div>
                                 </div>
@@ -228,7 +243,7 @@ function drawMessage(message) {
                     <div class="media-body">
                       <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, ${day} ${hour}</span>
                         <div  class="msg-text">
-                                ${decrypt(body,message.user)}
+                                ${body}
                  </div>
                  </div>
                 </div>
