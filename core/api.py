@@ -17,9 +17,12 @@ from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
 from core.serializers import (ChatGroupDetailSerializer,
                               ChatGroupMessageDetailSerializer,
                               ChatGroupMessageSerializer, ChatGroupSerializer,
-                              FileSerializer, MessageModelSerializer,
-                              RelationshipModelSerializer, UserModelSerializer)
+                              MessageModelSerializer,
+                              RelationshipModelSerializer, UserModelSerializer,FileSerializer,RemoveUserSerializer)
 
+from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view,authentication_classes
 User = get_user_model()
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     """
@@ -268,3 +271,34 @@ class GetFilesAPI(mixins.ListModelMixin, generics.GenericAPIView):
                 | Q(recipient__username=target, user=request.user)
             )
         return super(GetFilesAPI, self).list(request, *args, **kwargs)
+
+
+# class UserRemoveAPIView(generics.DestroyAPIView):
+#     queryset = Relationship.objects.filter(creator_id=1)
+#     serializer_class = RemoveUserSerializer
+#     authentication_classes = (
+#         CsrfExemptSessionAuthentication,
+#         TokenAuthentication,
+#     )
+#     lookup_field = "creator_id"
+
+@api_view(['POST'])
+@authentication_classes([ CsrfExemptSessionAuthentication,TokenAuthentication,])
+def UserRemoveAPIView(request):
+    if request.method == 'POST':
+        creator = request.POST['creator']
+        friend = request.POST['friend']
+        if(creator is not None and friend is not None):
+            creatorObject = User.objects.get(username=creator)
+            friendObject = User.objects.get(username = friend)
+            Relationship.objects.filter(creator_id = creatorObject.id).filter(friends_id = friendObject.id).delete()
+            MessageModel.objects.filter(user_id = creatorObject.id).filter(recipient_id = friendObject.id).delete()
+            MessageModel.objects.filter(recipient_id = creatorObject.id).filter(user_id = friendObject.id).delete()
+
+
+            
+        
+        return Response({})
+        
+    return Response({})
+    

@@ -64,3 +64,8 @@ class FileSerializer(ModelSerializer):
     class Meta:
         model = MessageModel
         fields = ('id', 'files')
+        
+class RemoveUserSerializer(ModelSerializer):
+    class Meta:
+        model = Relationship
+        fields = "__all__"
