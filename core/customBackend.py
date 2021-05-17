@@ -27,7 +27,7 @@ class NothiAuthenticationBackend(BaseBackend):
 
             else:
                 return None
-        except:
+        except Exception as e:
             return None
 
         try:

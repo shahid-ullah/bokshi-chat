@@ -2,15 +2,21 @@
 """Base Settings."""
 import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from os.path import join
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_DIR = BASE_DIR / 'media'
+import environ
+
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 PROJECT_ROOT = BASE_DIR
 
+env = environ.Env(DEBUG=(bool, False))
+env_file = os.path.join(BASE_DIR, ".env")
+environ.Env.read_env(env_file)
+
+SECRET_KEY = env('SECRET_KEY')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ABC1234'
+# SECRET_KEY = 'ABC1234'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -62,7 +68,7 @@ ROOT_URLCONF = 'chat.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,14 +85,15 @@ WSGI_APPLICATION = 'chat.wsgi.application'
 ASGI_APPLICATION = 'chat.asgi.application'
 
 # Database
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DJANGO_DB_NAME', 'tappware_chat'),
-        'USER': os.environ.get('DJANGO_DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', ''),
-        'HOST': os.environ.get('DJANGO_DB_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('DJAGNO_DB_PORT', '3306'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 # Password validation
@@ -164,15 +171,15 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 # Collect static files here
-STATIC_ROOT = join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # look for static assets here
 STATICFILES_DIRS = [
-    join(PROJECT_ROOT, 'static'),
+    BASE_DIR / 'static',
 ]
 
 MEDIA_URL = '/media/'
 # Collect media files here
-MEDIA_ROOT = join(PROJECT_ROOT, 'mediafiles')
+MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 
 # CORS_ORIGIN_WHITELIST = (
@@ -180,8 +187,6 @@ MEDIA_ROOT = join(PROJECT_ROOT, 'mediafiles')
 #     'http://localhost:8000',
 # )
 
-MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = "/media/"
 AUTH_USER_MODEL = 'user_app.UserModel'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -210,6 +215,3 @@ if DEBUG:
         'debug_toolbar.panels.redirects.RedirectsPanel',
         'debug_toolbar.panels.profiling.ProfilingPanel',
     ]
-
-if not DEBUG:
-    ALLOWED_HOSTS = ['*']
