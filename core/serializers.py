@@ -1,11 +1,12 @@
-from django.contrib.auth.models import User
+# core/serializers.py
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import CharField, ModelSerializer
 
 from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class MessageModelSerializer(ModelSerializer):
     user = CharField(source='user.username', read_only=True)
@@ -16,19 +17,24 @@ class MessageModelSerializer(ModelSerializer):
         recipient = get_object_or_404(
             User, username=validated_data['recipient']['username']
         )
-        msg = MessageModel(recipient=recipient, body=validated_data['body'], user=user,files=validated_data['files'])
+        msg = MessageModel(
+            recipient=recipient,
+            body=validated_data['body'],
+            user=user,
+            files=validated_data['files'],
+        )
         msg.save()
         return msg
 
     class Meta:
         model = MessageModel
-        fields = ('id', 'user', 'recipient', 'timestamp', 'body','files')
+        fields = ('id', 'user', 'recipient', 'timestamp', 'body', 'files')
 
 
 class UserModelSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username','username_eng')
+        fields = ('id', 'username', 'username_eng')
 
 
 class RelationshipModelSerializer(ModelSerializer):
@@ -60,11 +66,13 @@ class ChatGroupMessageDetailSerializer(ModelSerializer):
         model = ChatGroupMessage
         fields = "__all__"
 
+
 class FileSerializer(ModelSerializer):
     class Meta:
         model = MessageModel
         fields = ('id', 'files')
-        
+
+
 class RemoveUserSerializer(ModelSerializer):
     class Meta:
         model = Relationship

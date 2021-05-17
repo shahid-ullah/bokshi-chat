@@ -1,16 +1,14 @@
 # core/api.py
 
-# from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, mixins, parsers, status, viewsets
+from rest_framework import generics, mixins, parsers, status
 from rest_framework.authentication import (SessionAuthentication,
                                            TokenAuthentication)
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from chat import settings
@@ -19,8 +17,7 @@ from core.serializers import (ChatGroupDetailSerializer,
                               ChatGroupMessageDetailSerializer,
                               ChatGroupMessageSerializer, ChatGroupSerializer,
                               FileSerializer, MessageModelSerializer,
-                              RelationshipModelSerializer,
-                              RemoveUserSerializer, UserModelSerializer)
+                              RelationshipModelSerializer, UserModelSerializer)
 
 User = get_user_model()
 
@@ -53,7 +50,6 @@ class MessageModelViewSet(ModelViewSet):
         CsrfExemptSessionAuthentication,
         TokenAuthentication,
     )
-    # authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = MessagePagination
 
     def list(self, request, *args, **kwargs):

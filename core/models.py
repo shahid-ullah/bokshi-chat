@@ -1,15 +1,16 @@
+# core/models.py
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import (CASCADE, DateTimeField, ForeignKey, Model,
                               TextField)
 
 AUTH_USER_MODEL = getattr(settings, "AUTH_USER_MODEL", "user_app.UserModel")
-# from django.db.models.fields import related
-def upload_path(instance,filename):
-    return "upload/{user}/{filename}".format(user=instance.user,filename=filename)
+
+
+def upload_path(instance, filename):
+    return "upload/{user}/{filename}".format(user=instance.user, filename=filename)
 
 
 class MessageModel(Model):
@@ -36,8 +37,8 @@ class MessageModel(Model):
     timestamp = DateTimeField(
         'timestamp', auto_now_add=True, editable=False, db_index=True
     )
-    body = TextField('body',null=True)
-    files = models.FileField(upload_to=upload_path,  null=True)
+    body = TextField('body', null=True)
+    files = models.FileField(upload_to=upload_path, null=True)
 
     def __str__(self):
         return str(self.id)

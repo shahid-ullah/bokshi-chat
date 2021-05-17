@@ -5,14 +5,9 @@ import os
 from os.path import join
 from pathlib import Path
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_DIR=BASE_DIR/'media'
+MEDIA_DIR = BASE_DIR / 'media'
 PROJECT_ROOT = BASE_DIR
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'ABC1234'
@@ -31,10 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    # Apps
+    # local apps
     'core',
     'user_app',
-    # 3rd party
+    # 3rd party apps
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -84,20 +79,6 @@ WSGI_APPLICATION = 'chat.wsgi.application'
 ASGI_APPLICATION = 'chat.asgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'bokshi_chat',
-#         'USER': 'bokshichat',
-#         'PASSWORD': 'Bokshi>1234',
-#         'HOST': '127.0.0.1',  # Or an IP Address that your DB is hosted on
-#         'PORT': '3306',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -110,7 +91,6 @@ DATABASES = {
     }
 }
 # Password validation
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = []
 
@@ -132,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = []
 # },
 
 # Internationalization
-# https://docs.djangoproject.com/en/dev/topics/i18n/
 
 
 REST_FRAMEWORK = {
@@ -149,7 +128,6 @@ REST_FRAMEWORK = {
 
 MESSAGES_TO_LOAD = 15
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -161,7 +139,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/dev/howto/static-files/
 
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
@@ -204,14 +181,13 @@ MEDIA_ROOT = join(PROJECT_ROOT, 'mediafiles')
 #     'http://localhost:8000',
 # )
 
-CORS_ORIGIN_ALLOW_ALL = True
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = "/media/"
 AUTH_USER_MODEL = 'user_app.UserModel'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'core.customBackend.NothiAuthenticationBackend',
-    )
+)
 
 # development setup
 if DEBUG:
@@ -235,8 +211,6 @@ if DEBUG:
         'debug_toolbar.panels.redirects.RedirectsPanel',
         'debug_toolbar.panels.profiling.ProfilingPanel',
     ]
-
-    # deployment setup
 
 if not DEBUG:
     ALLOWED_HOSTS = ['*']

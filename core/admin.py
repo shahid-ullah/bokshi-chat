@@ -1,3 +1,4 @@
+# core/admin.py
 from django.contrib.admin import ModelAdmin, site
 
 from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship

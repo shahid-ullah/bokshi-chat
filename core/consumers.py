@@ -11,14 +11,8 @@ from .models import ChatGroup, ChatGroupMessage
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # print()
-        # print("connect method called")
-        # print()
         user_id = self.scope["session"]["_auth_user_id"]
         self.group_name = "{}".format(user_id)
-        # Join room group
-        # print("the Channel Name is ", self.channel_name)
-
         await self.channel_layer.group_add(self.group_name, self.channel_name)
 
         await self.accept()
@@ -45,10 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def recieve_group_message(self, event):
         message = event['message']
-        # print("The message id is ", message)
-
         # Send message to WebSocket
-
         await self.send(text_data=json.dumps({'message': message}))
 
 
