@@ -87,30 +87,30 @@ class MessageModel(Model):
         ordering = ('-timestamp',)
 
 
-class ChatGroup(models.Model):
-    name = models.CharField(max_length=50)
-    member = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='chat_groups'
-    )
+# class ChatGroup(models.Model):
+#     name = models.CharField(max_length=50)
+#     member = models.ManyToManyField(
+#         settings.AUTH_USER_MODEL, related_name='chat_groups'
+#     )
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
-class ChatGroupMessage(models.Model):
-    group_name = models.ForeignKey(
-        ChatGroup, on_delete=models.CASCADE, related_name='messages'
-    )
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='chat_group_messages',
-    )
-    message = models.TextField()
-    timestamp = models.DateField(auto_now_add=True)
+# class ChatGroupMessage(models.Model):
+#     group_name = models.ForeignKey(
+#         ChatGroup, on_delete=models.CASCADE, related_name='messages'
+#     )
+#     author = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.CASCADE,
+#         related_name='chat_group_messages',
+#     )
+#     message = models.TextField()
+#     timestamp = models.DateField(auto_now_add=True)
 
-    def __str__(self):
-        return f'{self.message}'
+#     def __str__(self):
+#         return f'{self.message}'
 
 
 class Relationship(models.Model):

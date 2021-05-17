@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import CharField, ModelSerializer
 
-from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
+from core.models import MessageModel, Relationship
 
 User = get_user_model()
 
@@ -43,28 +43,28 @@ class RelationshipModelSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class ChatGroupSerializer(ModelSerializer):
-    class Meta:
-        model = ChatGroup
-        fields = ('name', 'member')
+# class ChatGroupSerializer(ModelSerializer):
+#     class Meta:
+#         model = ChatGroup
+#         fields = ('name', 'member')
 
 
-class ChatGroupDetailSerializer(ModelSerializer):
-    class Meta:
-        model = ChatGroup
-        fields = "__all__"
+# class ChatGroupDetailSerializer(ModelSerializer):
+#     class Meta:
+#         model = ChatGroup
+#         fields = "__all__"
 
 
-class ChatGroupMessageSerializer(ModelSerializer):
-    class Meta:
-        model = ChatGroupMessage
-        fields = "__all__"
+# class ChatGroupMessageSerializer(ModelSerializer):
+#     class Meta:
+#         model = ChatGroupMessage
+#         fields = "__all__"
 
 
-class ChatGroupMessageDetailSerializer(ModelSerializer):
-    class Meta:
-        model = ChatGroupMessage
-        fields = "__all__"
+# class ChatGroupMessageDetailSerializer(ModelSerializer):
+#     class Meta:
+#         model = ChatGroupMessage
+#         fields = "__all__"
 
 
 class FileSerializer(ModelSerializer):

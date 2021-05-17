@@ -1,7 +1,7 @@
 # core/admin.py
 from django.contrib.admin import ModelAdmin, site
 
-from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
+from core.models import MessageModel, Relationship
 
 
 class MessageModelAdmin(ModelAdmin):
@@ -14,6 +14,4 @@ class MessageModelAdmin(ModelAdmin):
 
 
 site.register(MessageModel, MessageModelAdmin)
-site.register(ChatGroup)
-site.register(ChatGroupMessage)
 site.register(Relationship)

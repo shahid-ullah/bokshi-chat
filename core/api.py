@@ -12,11 +12,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from chat import settings
-from core.models import ChatGroup, ChatGroupMessage, MessageModel, Relationship
-from core.serializers import (ChatGroupDetailSerializer,
-                              ChatGroupMessageDetailSerializer,
-                              ChatGroupMessageSerializer, ChatGroupSerializer,
-                              FileSerializer, MessageModelSerializer,
+from core.models import MessageModel, Relationship
+from core.serializers import (FileSerializer, MessageModelSerializer,
                               RelationshipModelSerializer, UserModelSerializer)
 
 User = get_user_model()
@@ -89,73 +86,73 @@ class UserModelViewSet(ModelViewSet):
         return super(UserModelViewSet, self).list(request, *args, **kwargs)
 
 
-class ChatGroupView(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
-    queryset = ChatGroup.objects.all()
-    serializer_class = ChatGroupSerializer
+# class ChatGroupView(
+#     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+# ):
+#     queryset = ChatGroup.objects.all()
+#     serializer_class = ChatGroupSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class ChatGroupDetailview(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
-    queryset = ChatGroup.objects.all()
-    serializer_class = ChatGroupDetailSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
 
-class ChatGroupMessageView(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
-    queryset = ChatGroupMessage.objects.all()
-    serializer_class = ChatGroupMessageSerializer
+# class ChatGroupDetailview(
+#     mixins.RetrieveModelMixin,
+#     mixins.UpdateModelMixin,
+#     mixins.DestroyModelMixin,
+#     generics.GenericAPIView,
+# ):
+#     queryset = ChatGroup.objects.all()
+#     serializer_class = ChatGroupDetailSerializer
 
-    def get(self, request, *args, **kwargs):
-        group_name = self.kwargs.get('group_name', None)
-        # print(group_name)
-        # if group_name is not None:
-        #     self.queryset = self.get_queryset().filter(group_name=group_name)
-        return self.list(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
 
-class ChatGroupMessageDetailView(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
+# class ChatGroupMessageView(
+#     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+# ):
+#     queryset = ChatGroupMessage.objects.all()
+#     serializer_class = ChatGroupMessageSerializer
 
-    queryset = ChatGroupMessage.objects.all()
-    serializer_class = ChatGroupMessageDetailSerializer
+#     def get(self, request, *args, **kwargs):
+#         group_name = self.kwargs.get('group_name', None)
+#         # print(group_name)
+#         # if group_name is not None:
+#         #     self.queryset = self.get_queryset().filter(group_name=group_name)
+#         return self.list(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+# class ChatGroupMessageDetailView(
+#     mixins.RetrieveModelMixin,
+#     mixins.UpdateModelMixin,
+#     mixins.DestroyModelMixin,
+#     generics.GenericAPIView,
+# ):
+
+#     queryset = ChatGroupMessage.objects.all()
+#     serializer_class = ChatGroupMessageDetailSerializer
+
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
 
 class MemberListView(mixins.ListModelMixin, generics.GenericAPIView):
