@@ -12,7 +12,10 @@ let searchInput = $('#search-input')
 let fileSharing=$('#file_sharing')
 let fileSection=$('#file-section')
 let form_data = new FormData();
-$('#OpenFileUpload').click(function(){$('#FileUpload').trigger('click'); });
+
+$('#OpenFileUpload').click(function(){
+  $('#FileUpload').trigger('click'); }
+);
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
 
@@ -26,106 +29,101 @@ let currentRecipientName=null
 
 
 function handleFile(e) {
-    uploadedFile = e.target.files[0];
+  uploadedFile = e.target.files[0];
 
-    if(uploadedFile !=null){
-        let body=null;
-        uploadFile(currentRecipient,body,uploadedFile)
-    }
+  if(uploadedFile !=null){
+    let body=null;
+    uploadFile(currentRecipient,body,uploadedFile)
+  }
 }
 
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
-
-
-    currentRecipientName=username_eng
-    setCurrentRecipient(user,username_eng)
-
-
-    getSharedFiles(user)
-
+  currentRecipientName=username_eng
+  setCurrentRecipient(user,username_eng)
+  getSharedFiles(user)
 }
 
 function getSharedFiles(user)
 {
-    $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
-        fileSharing.children('.shared').remove();
+  $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
+    fileSharing.children('.shared').remove();
 
+    for (let i = data['results'].length - 1; i >= 0; i--) {
 
-        for (let i = data['results'].length - 1; i >= 0; i--) {
+      if(data['results'][i]['files']!=null)
+      { let fileName=data['results'][i]['files'].split("/")
+        fileName=fileName[fileName.length-1]
+        let ext=fileName.split(".")
+        let image=['png',"jpg",'jpeg']
+        let doc=['doc','docx']
+        let excel=['xlsx','xlsm']
+        let pdf = ['pdf']
 
-            if(data['results'][i]['files']!=null)
-           { let fileName=data['results'][i]['files'].split("/")
-             fileName=fileName[fileName.length-1]
-             let ext=fileName.split(".")
-             let image=['png',"jpg",'jpeg']
-             let doc=['doc','docx']
-             let excel=['xlsx','xlsm']
-             let pdf = ['pdf']
-
-             sharedItem=null
-             if(image.includes(ext[ext.length-1]))
-              {  sharedItem=
-                `
+        sharedItem=null
+        if(image.includes(ext[ext.length-1]))
+        {  sharedItem=
+            `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-image text-warning mx-3 fa-2x"></i>${fileName}</a>
 
                 `
-              }
-              else if(doc.includes(ext[ext.length-1]))
-              {  sharedItem=
-                `
+        }
+        else if(doc.includes(ext[ext.length-1]))
+        {  sharedItem=
+            `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-word text-primary fa-2x mx-3"></i>${fileName}</a>
 
                 `
-              }
-              else if(pdf.includes(ext[ext.length-1]))
-              {  sharedItem=
-                `
+        }
+        else if(pdf.includes(ext[ext.length-1]))
+        {  sharedItem=
+            `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-pdf text-danger fa-2x mx-3"></i>${fileName}</a>
 
                 `
-              }
-              else if(pdf.includes(ext[ext.length-1]))
-              {  sharedItem=
-                `
+        }
+        else if(pdf.includes(ext[ext.length-1]))
+        {  sharedItem=
+            `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file-excel text-success  fa-2x mx-3"></i>${fileName}</a>
 
                 `
-              }
-              else
-              {  sharedItem=
-                `
+        }
+        else
+        {  sharedItem=
+            `
                 <a href="${data['results'][i]['files']}" target="_blank" class="shared list-group-item list-group-item-action"><i class="fad fa-file text-success  fa-2x mx-3"></i>${fileName}</a>
 
                 `
-              }
-
-            $(sharedItem).appendTo('#file_sharing');
-           }
-
         }
 
-    });
+        $(sharedItem).appendTo('#file_sharing');
+      }
+
+    }
+
+  });
 
 }
+
 function addFilesFromSocket(file,fileName){
-    const sharedItem=
-            `
+  const sharedItem=
+    `
             <a href="${file}" target="_blank" class="shared list-group-item list-group-item-action fad fa-file">${fileName}</a>
-            
+
             `
-            $(sharedItem).appendTo('#file_sharing');
+  $(sharedItem).appendTo('#file_sharing');
 }
 
 function updateUserList() {
-    $.getJSON('api/v1/members/', function (data) {
-        userList.children('.user').remove();
+  $.getJSON('api/v1/members/', function (data) {
+    userList.children('.user').remove();
 
-        for (let i = 0; i < data.length; i++) {
-            // const userItem = `<li class="contact">${data[i]['username']}</li>`;
+    for (let i = 0; i < data.length; i++) {
+      // const userItem = `<li class="contact">${data[i]['username']}</li>`;
 
-            const userItem =
-            `
+      const userItem =
+        `
             <div id="selectUser" class="user"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
                     <li class="media align-items-center px-1  py-2">
                         <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
@@ -141,84 +139,73 @@ function updateUserList() {
 
           </div>
           `
-            $(userItem).appendTo('#user-list');
-        }
-        // $('#selectUser').click(function (e) {
-        //      selectedUser = $(e.target.value)
-        //     // setCurrentRecipient(selected);
-        //     console.log(selectedUser)
-        // });
-        // $('.user').click(function () {
-        //     userList.children('.active').removeClass('active');//[the previous selected active username er front end er active class remove hobe]
-        //     let selected = event.target;
-        //     $(selected).addClass('active');
-            // setCurrentRecipient(selected.text);
-        // });
-    });
+      $(userItem).appendTo('#user-list');
+    }
+  });
 }
 
 // Receive one message and append it to message list
 
 
 function removeUser(friend){
-    console.log(friend)
-    $.post('api/v1/remove-user/', {
-        creator: currentUser,
-        friend: friend
-        
-    }).fail(function () {
-        alert('Error! Check console!');
-    });
- 
+  // console.log(friend)
+  $.post('api/v1/remove-user/', {
+    creator: currentUser,
+    friend: friend
+
+  }).fail(function () {
+    alert('Error! Check console!');
+  });
+
 }
 
 
 function drawMessage(message) {
 
-    let date = new Date(message.timestamp);
-    const minute=date.toLocaleString('en-US', { minute: 'numeric' })
-    const day=date.toLocaleString('en-US', { weekday: 'long'})
+  let date = new Date(message.timestamp);
+  // const minute=date.toLocaleString('en-US', { minute: 'numeric' })
+  const day=date.toLocaleString('en-US', { weekday: 'long'})
 
-    const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-    const second=date.getSeconds()
-    // const day=date.getDay()
-    const month=date.toLocaleString('default', { month: 'long' })
-
-
+  const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+  // const second=date.getSeconds()
+  // const day=date.getDay()
+  // const month=date.toLocaleString('default', { month: 'long' })
 
 
-    // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    // date=date.toLocaleDateString("en-US")
 
 
-    let body=null;
-    if(message.body==="null"){
-        var fileName=message.files.split("/");
-        fileName=fileName[fileName.length-1]
+  // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  // date=date.toLocaleDateString("en-US")
 
-        body=`<a href=${message.files} target="_blank" >${fileName}</a>`
 
-        addFilesFromSocket(message.files,fileName )
+  let body=null;
+  if(message.body==="null"){
+    var fileName=message.files.split("/");
+    fileName=fileName[fileName.length-1]
+
+    body=`<a href=${message.files} target="_blank" >${fileName}</a>`
+
+    addFilesFromSocket(message.files,fileName )
+  }
+  else{
+
+    if (message.user === currentUser){
+      body=message.body
+      body = decrypt(body,currentUser)
     }
-    else{
-         
-        if (message.user === currentUser){
-            body=message.body
-            body = decrypt(body,currentUser)
-        }
-        else 
-        {
-           body=message.body
-           body = decrypt(body,message.user)
-        }
-
-        console.log(body)  
-        console.log(body)
-
+    else
+    {
+      body=message.body
+      body = decrypt(body,message.user)
     }
-    if (message.user === currentUser) {
-        // console.log("from current user body",body)
-         const messageItem= `  
+
+    // console.log(body)
+    // console.log(body)
+
+  }
+  if (message.user === currentUser) {
+    // console.log("from current user body",body)
+    const messageItem= `
                              <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
                                 <div class="media sending">
                                     <div class="media-body text-right">
@@ -229,15 +216,14 @@ function drawMessage(message) {
                                     </div>
                                 </div>
                             </li>
-
          `
-      $(messageItem).appendTo('#message-list');
-    }
-    else{
-        // console.log("from current user body",body)
+    $(messageItem).appendTo('#message-list');
+  }
+  else{
+    // console.log("from current user body",body)
 
-         const messageItem=
-     `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
+    const messageItem=
+      `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
                  <div class="media comming">
                   <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
                     <div class="media-body">
@@ -250,63 +236,65 @@ function drawMessage(message) {
             </li>
          `
     $(messageItem).appendTo('#message-list');
-    }
+  }
 
 
-    // $(messageItem).appendTo('#message-list');
+  // $(messageItem).appendTo('#message-list');
 
 
 }
 
 // Fetch last 20 conversatio from the database
 function getConversation(recipient) {
-    $.getJSON(`/api/v1/message/?target=${recipient}`, function (data) {
-        messageList.children('.message').remove();
-        for (let i = data['results'].length - 1; i >= 0; i--) {
-            drawMessage(data['results'][i]);
-        }
+  $.getJSON(`/api/v1/message/?target=${recipient}`, function (data) {
+    messageList.children('.message').remove();
+    for (let i = data['results'].length - 1; i >= 0; i--) {
+      drawMessage(data['results'][i]);
+    }
 
-    });
+  });
 
 }
 
 // Retrive message by message id and add to messageList
 // Access message id from websocket
 function getMessageById(message) {
-    id = JSON.parse(message).message
-    $.getJSON(`/api/v1/message/${id}/`, function (data) {
-        if (data.user === currentRecipient ||
-            (data.recipient === currentRecipient && data.user == currentUser)) {
-            drawMessage(data);
-        }
-       ;
-    });
-    updateUserList()
+  id = JSON.parse(message).message
+  $.getJSON(`/api/v1/message/${id}/`, function (data) {
+    if (data.user === currentRecipient ||
+      (data.recipient === currentRecipient && data.user == currentUser)) {
+      drawMessage(data);
+    }
+    ;
+  });
+  updateUserList()
 }
 
 // Send message to messages api
 function  uploadFile(recipient, body,file) {
 
-    let form_data = new FormData();
-    form_data.append("files", file);
-    form_data.append("recipient",recipient)
-    form_data.append("body",body)
+  let form_data = new FormData();
+  form_data.append("files", file);
+  form_data.append("recipient",recipient);
+  form_data.append("body",body);
+  // console.log('upload file method');
+  // console.log(file);
+  // console.log('upload file method');
 
+  axios.post("http://127.0.0.1:8000/api/v1/message/", form_data, {
+    header: {
+      "Content-Type": "multipart/form-data"
+    }
+  })
+    .then(response => console.log(response))
 
-
-
-
-
-
-
-    axios.post("http://127.0.0.1:8000/api/v1/message/", form_data, {
-        header: {
-            "Content-Type": "multipart/form-data"
-        }
-    })
-        .then(response => console.log(""))
-
-
+  // $.post('/api/v1/message/', {
+  //   recipient: recipient,
+  //   body: body,
+  //   files:file,
+  // }).fail(function () {
+  //   alert('Error! Check console!');
+  // });
 }
 
 // set clicked user as currentRecipient
@@ -314,53 +302,53 @@ function  uploadFile(recipient, body,file) {
 function setCurrentRecipient(username,username_eng) {
 
 
-    username_tag = contactProfile.getElementsByTagName('h4')[0]
+  username_tag = contactProfile.getElementsByTagName('h4')[0]
 
-    username_tag.innerText = username_eng
-    currentRecipient = username;
+  username_tag.innerText = username_eng
+  currentRecipient = username;
 
-    getConversation(currentRecipient);
-    enableInput();
+  getConversation(currentRecipient);
+  enableInput();
 }
 
 
 // Enable input button
 function enableInput() {
-    chatInput.prop('disabled', false);
-    chatButton.prop('disabled', false);
-    chatInput.focus();
-    // chatInput.show()
-    // chatButton.show()
+  chatInput.prop('disabled', false);
+  chatButton.prop('disabled', false);
+  chatInput.focus();
+  // chatInput.show()
+  // chatButton.show()
 }
 
 // Disable input button
 function disableInput() {
-    chatInput.prop('disabled', true);
-    chatButton.prop('disabled', true);
-    // chatInput.hide()
-    // chatButton.hide()
+  chatInput.prop('disabled', true);
+  chatButton.prop('disabled', true);
+  // chatInput.hide()
+  // chatButton.hide()
 
 }
 
 $(document).ready(function () {
-    updateUserList();
-    disableInput();
-    // $("#message-box").scrollTop($(document).height());
+  updateUserList();
+  disableInput();
+  // $("#message-box").scrollTop($(document).height());
 
 
-    userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
-//    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
-    var socket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws?session_key=${sessionKey}')
-        // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
-    chatInput.keypress(function (e) {
+  userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
+  //    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
+  var socket = new WebSocket(
+    'ws://' + window.location.host +
+    '/ws?session_key=${sessionKey}')
+  // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
+  chatInput.keypress(function (e) {
 
-        if (e.keyCode == 13)
+    if (e.keyCode == 13)
 
 
-            chatButton.click();
-    });
+      chatButton.click();
+  });
 
 
 
@@ -369,18 +357,21 @@ $(document).ready(function () {
     if (chatInput.val().length > 0) {
 
       let body= chatInput.val();
+      // var csrftoken = Cookies.get('csrftoken');
+      // console.log(csrftoken);
+      // console.log(body);
       //   sendMessage(currentRecipient, chatInput.val(), image);
-        body = encrypt(body,currentUser);
+      body = encrypt(body,currentUser);
 
-    //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
+      //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
 
-        chatInput.val('');
-         $.post('/api/v1/message/', {
-          recipient: currentRecipient,
-          body: body,
-          files:null
+      chatInput.val('');
+      $.post('/api/v1/message/', {
+        recipient: currentRecipient,
+        body: body,
+        files:null
       }).fail(function () {
-          alert('Error! Check console!');
+        alert('Error! Check console!');
       });
     }
   });
@@ -395,21 +386,21 @@ function onSelectSearchedUser(username){
 
 
 
-    $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
-       const selctedSearchedUserID = data[0]['id']
-       const username_eng=data[0]['username_eng']
+  $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
+    const selctedSearchedUserID = data[0]['id']
+    const username_eng=data[0]['username_eng']
 
-        setCurrentRecipient(username,username_eng)
-        currentRecipientName=username_eng
+    setCurrentRecipient(username,username_eng)
+    currentRecipientName=username_eng
 
-            $.post('/api/v1/member/add/', {
-                creator: currentUserID,
-                friend: selctedSearchedUserID
-            }).fail(function () {
-                alert('Error! Check console!');
-            });
+    $.post('/api/v1/member/add/', {
+      creator: currentUserID,
+      friend: selctedSearchedUserID
+    }).fail(function () {
+      alert('Error! Check console!');
+    });
 
-})
+  })
 
 
 }
@@ -417,23 +408,23 @@ function onSelectSearchedUser(username){
 
 
 searchInput.click(function(){
-    drawSearchedUser()
+  drawSearchedUser()
 
 })
 
 function drawSearchedUser(){
-    // $("#draw-search-list").children('.remove-child').remove();
+  // $("#draw-search-list").children('.remove-child').remove();
   $.getJSON(`/api/v1/usersearch/`, function (data) {
 
-      $("#draw-search-list").children('.remove-child').remove();
+    $("#draw-search-list").children('.remove-child').remove();
 
     for(let i=0;i<=data.length-1;i++)
     {
-        let user=String(data[i]["username_eng"])
-        const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
+      let user=String(data[i]["username_eng"])
+      const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
 
 
-       $(searchedUser).appendTo('#draw-search-list');
+      $(searchedUser).appendTo('#draw-search-list');
     }
 
 
@@ -446,12 +437,12 @@ function drawSearchedUser(){
 }
 
 function decrypt(data, key) {
-    return CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
- }
+  return CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
+}
 
- function encrypt(data, key) {
-    return CryptoJS.AES.encrypt(data, key).toString();
- }
+function encrypt(data, key) {
+  return CryptoJS.AES.encrypt(data, key).toString();
+}
 
 
 // for testing

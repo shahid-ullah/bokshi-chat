@@ -14,6 +14,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/jquery.fancybox.css' %}" />
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/styles.css' %}" />
         <script src="https://kit.fontawesome.com/b1eb6b9fd3.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js"></script>
     </head>
 
     <body>
@@ -21,38 +22,36 @@
         <section id="main" class="d-flex align-start h-100">
             <aside class="asideBarWrapper border-right h-100">
                 <div class="px-2">
+
                     <div class="aside-header-wrapper">
                         <div class="d-flex align-items-center justify-content-between header" id="user-profile">
                             <h1 class="mb-0">Charts</h1>
                             <div class="btn-group">
                                 <button type="button" class="btn p-0 border-0 font-lg header-action-button bg-none"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="fas fa-exclamation-circle fa-lg text-primary"></i></button>
+                                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                                                                                  class="fas fa-exclamation-circle fa-lg text-primary"></i></button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#">Action</a>
                                     <a class="dropdown-item" href="#">Another action</a>
                                     <a class="dropdown-item" href="#">Something else here</a>
                                     <div class="dropdown-divider"></div>
-                                     <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                                    <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div id="search-input">
                         <div class="messenger-friend-search">
                             <div class="input-group">
                                 <!-- <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1"><i class="fal fa-search"></i></span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Search" aria-label="Username"
                                     aria-describedby="basic-addon1"> -->
-                                <select onchange="onSelectSearchedUser(value)" id="draw-search-list" class="js-example-basic-single" name="state" placeholder="Search User" >
-                                        
+                                    <select onchange="onSelectSearchedUser(value)" id="draw-search-list" class="js-example-basic-single" name="state" placeholder="Search User" >
                                         <option value="ttt" disabled selected hidden>Please Choose...</option>
-                                        
-                                        
-                                    
-                                </select>
+                                    </select>
                             </div>
                         </div>
                     </div>
@@ -60,13 +59,15 @@
 
                 <div class="messenger-user-list-wrapper mt-3">
                     <ul id="user-list" class="list-unstyled">
-                    
+
                     </ul>
                 </div>
-         
+
             </aside>
+
             <div id="chatWrapperOuter" class="d-flex align-items-start w-100 h-100">
                 <div id="chatWrapper" class="h-100">
+
                     <div class="d-flex  align-items-center justify-content-between p-2  border-bottom">
                         <div class="d-flex align-items-center">
                             <img src="{% static 'img/user-img.png' %}" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
@@ -77,16 +78,17 @@
                         </div>
                         <div>
                             <button type="button" class="btn p-0 border-0 font-lg header-action-button"
-                                data-toggle="collapse" data-target="#collapseSidebar"><i
-                                    class="fas fa-exclamation-circle fa-lg"></i></button>
+                                                  data-toggle="collapse" data-target="#collapseSidebar"><i
+                                                                         class="fas fa-exclamation-circle fa-lg"></i></button>
                         </div>
                     </div>
+
+                    {# chat messages list #}
                     <div class="chat-text-show-wrapper mt-2 position-relative">
                         <ul class="list-unstyled" id="message-list">
-                            
                         </ul>
                     </div>
-                    
+
                     <div class="chat-input-wrapper py-3 px-2 d-flex position-relative">
                         <div id="emojis"></div>
                         <div class="input-group">
@@ -97,6 +99,7 @@
                             <input type="text" class="form-control mr-2 chat-input"  id="writeMsg" placeholder="Type your message" aria-label="Username"  aria-describedby="basic-addon1">
                             <button  id="btn-send" type="button" class="btn btn-primary mr-2 send-button"><i class="fad fa-paper-plane"></i></button>
                         </div>
+
                         <div  class="d-flex align-items-center attachments-button-wrapper">
                             <button type="button" id="OpenFileUpload" class="btn mr-2 btn-rounded d-none bg-danger" ><i   class="fas fa-plus-circle fa-lg"></i></button>
                             <!-- <label class="btn-rounded p-0 m-0 mr-2" for=""><i class="fas fa-image-polaroid fa-lg"></i></label> -->
@@ -104,7 +107,7 @@
                                 <input class="FileUpload" type="file" id="FileUpload" name="fileUpload" style="opacity:0"/>
                             </label>
                         </div>
-                     </div>
+                    </div>
                 </div>
                 <aside id="collapseSidebar" class="asideBarWrapperInner border-left h-100 collapse show">
                     <div class="">
@@ -113,41 +116,10 @@
                                 <h1 class="mb-0 px-2">Shared Files</h1>
                             </div>
                         </div>
-                        <!-- <div class="shared-files-wrapper">
-                            <div class="d-flex align-items-start justify-content-start flex-wrap">
-                                <div class="col text-center p-3">
-                                    <a href="http://www.orimi.com/pdf-test.pdf" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-pdf text-danger fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                     <a href="#"><i class="fad fa-file-word text-primary fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                     <a href="#"><i class="fad fa-file-excel text-success fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                     <a href="https://imgd.aeplcdn.com/476x268/n/cw/ec/38904/mt-15-front-view.jpeg" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-image text-warning fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                    <a href="https://imgd.aeplcdn.com/476x268/n/cw/ec/38904/mt-15-front-view.jpeg" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-image text-warning fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                    <a href="#"><i class="fad fa-file-excel text-success fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                    <a href="#"><i class="fad fa-file-word text-primary fa-3x"></i></a>
-                                </div>
-                                <div class="col text-center p-3">
-                                    <a href="http://www.orimi.com/pdf-test.pdf" data-fancybox="images" data-caption="My caption"><i class="fad fa-file-pdf text-danger fa-3x"></i></a>
-                                </div>
-                            </div>
-                        </div> -->
                         <div id="file_sharing">
                             <div id="file_sharing" class="list-group">
-                             
-                             
                             </div>
-    
-                          </div>
+                        </div>
                     </div>
                 </aside>
             </div>
@@ -170,15 +142,15 @@
                 $('.select2-container').css('width', '100%');
             });
         </script>
-                 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
- 
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
         <script>
-        let sessionKey = '{{ request.session.session_key }}';
-        let currentUser = '{{ request.user.username }}';
-        let currentUserName = '{{ request.user.username_eng }}';
+            let sessionKey = '{{ request.session.session_key }}';
+            let currentUser = '{{ request.user.username }}';
+            let currentUserName = '{{ request.user.username_eng }}';
 
 
-        let currentUserID = '{{ request.user.id }}';
+            let currentUserID = '{{ request.user.id }}';
         </script>
         <script src="{% static 'js/app.js' %}"></script>
     </body>
