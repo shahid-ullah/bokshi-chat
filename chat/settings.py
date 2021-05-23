@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import environ
+from django.conf import settings
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 PROJECT_ROOT = BASE_DIR
@@ -19,8 +20,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECRET_KEY = 'ABC1234'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
 
 # Application definition
 
@@ -196,7 +196,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # development setup
-if DEBUG:
+if settings.DEBUG:
     INTERNAL_IPS = [
         '127.0.0.1',
     ]
