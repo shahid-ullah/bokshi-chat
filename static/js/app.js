@@ -13,29 +13,15 @@ let fileSharing=$('#file_sharing')
 let fileSection=$('#file-section')
 let form_data = new FormData();
 
-$('#OpenFileUpload').click(function(){
-  $('#FileUpload').trigger('click'); }
-);
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
 
 //     });
 
 let selectedUserName = null
-
-document.getElementById('FileUpload').addEventListener('change', handleFile);
-
 let currentRecipientName=null
 
 
-function handleFile(e) {
-  uploadedFile = e.target.files[0];
-
-  if(uploadedFile !=null){
-    let body=null;
-    uploadFile(currentRecipient,body,uploadedFile)
-  }
-}
 
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
@@ -44,6 +30,7 @@ function onSelectUser(user,username_eng){
   getSharedFiles(user)
 }
 
+// Fetch user uploaded files
 function getSharedFiles(user)
 {
   $.getJSON(`/api/v1/get-files/?target=${user}`, function (data) {
@@ -115,6 +102,7 @@ function addFilesFromSocket(file,fileName){
   $(sharedItem).appendTo('#file_sharing');
 }
 
+// Fetch Friend list
 function updateUserList() {
   $.getJSON('api/v1/members/', function (data) {
     userList.children('.user').remove();
@@ -165,20 +153,11 @@ function drawMessage(message) {
   let date = new Date(message.timestamp);
   // const minute=date.toLocaleString('en-US', { minute: 'numeric' })
   const day=date.toLocaleString('en-US', { weekday: 'long'})
-
   const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-  // const second=date.getSeconds()
-  // const day=date.getDay()
-  // const month=date.toLocaleString('default', { month: 'long' })
-
-
-
-
-  // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  // date=date.toLocaleDateString("en-US")
-
-
   let body=null;
+
+  // check message contains file or text message
+  // if message body is null, this means message only contains files
   if(message.body==="null"){
     var fileName=message.files.split("/");
     fileName=fileName[fileName.length-1]
@@ -198,11 +177,9 @@ function drawMessage(message) {
       body=message.body
       body = decrypt(body,message.user)
     }
-
-    // console.log(body)
-    // console.log(body)
-
   }
+
+  // style message item based on user
   if (message.user === currentUser) {
     // console.log("from current user body",body)
     const messageItem= `
@@ -237,11 +214,6 @@ function drawMessage(message) {
          `
     $(messageItem).appendTo('#message-list');
   }
-
-
-  // $(messageItem).appendTo('#message-list');
-
-
 }
 
 // Fetch last 20 conversatio from the database
@@ -270,43 +242,45 @@ function getMessageById(message) {
   updateUserList()
 }
 
-// Send message to messages api
-function  uploadFile(recipient, body,file) {
 
+document.getElementById('FileUpload').addEventListener('change', handleFile);
+
+$('#OpenFileUpload').click(function(){
+  $('#FileUpload').trigger('click'); }
+);
+
+
+function handleFile(e) {
+  uploadedFile = e.target.files[0];
+
+  if(uploadedFile !=null){
+    let body=null;
+    uploadFile(currentRecipient,body,uploadedFile)
+  }
+}
+
+// Send message to messages api
+function uploadFile(recipient, body,file) {
   let form_data = new FormData();
   form_data.append("files", file);
   form_data.append("recipient",recipient);
   form_data.append("body",body);
-  // console.log('upload file method');
-  // console.log(file);
-  // console.log('upload file method');
 
-  axios.post("http://127.0.0.1:8000/api/v1/message/", form_data, {
+  axios.post("/api/v1/message/", form_data, {
     header: {
       "Content-Type": "multipart/form-data"
     }
   })
     .then(response => console.log(response))
-
-  // $.post('/api/v1/message/', {
-  //   recipient: recipient,
-  //   body: body,
-  //   files:file,
-  // }).fail(function () {
-  //   alert('Error! Check console!');
-  // });
 }
 
 // set clicked user as currentRecipient
 // get all conversation of currentRecipient or currentUser
 function setCurrentRecipient(username,username_eng) {
 
-
   username_tag = contactProfile.getElementsByTagName('h4')[0]
-
   username_tag.innerText = username_eng
   currentRecipient = username;
-
   getConversation(currentRecipient);
   enableInput();
 }
@@ -330,62 +304,8 @@ function disableInput() {
 
 }
 
-$(document).ready(function () {
-  updateUserList();
-  disableInput();
-  // $("#message-box").scrollTop($(document).height());
 
-
-  userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
-  //    let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
-  var socket = new WebSocket(
-    'ws://' + window.location.host +
-    '/ws?session_key=${sessionKey}')
-  // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
-  chatInput.keypress(function (e) {
-
-    if (e.keyCode == 13)
-
-
-      chatButton.click();
-  });
-
-
-
-
-  chatButton.click(function () {
-    if (chatInput.val().length > 0) {
-
-      let body= chatInput.val();
-      // var csrftoken = Cookies.get('csrftoken');
-      // console.log(csrftoken);
-      // console.log(body);
-      //   sendMessage(currentRecipient, chatInput.val(), image);
-      body = encrypt(body,currentUser);
-
-      //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
-
-      chatInput.val('');
-      $.post('/api/v1/message/', {
-        recipient: currentRecipient,
-        body: body,
-        files:null
-      }).fail(function () {
-        alert('Error! Check console!');
-      });
-    }
-  });
-
-  // Receive message from websocket
-  socket.onmessage = function (e) {
-    getMessageById(e.data);
-
-  };
-});
 function onSelectSearchedUser(username){
-
-
-
   $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
     const selctedSearchedUserID = data[0]['id']
     const username_eng=data[0]['username_eng']
@@ -401,10 +321,7 @@ function onSelectSearchedUser(username){
     });
 
   })
-
-
 }
-
 
 
 searchInput.click(function(){
@@ -415,25 +332,14 @@ searchInput.click(function(){
 function drawSearchedUser(){
   // $("#draw-search-list").children('.remove-child').remove();
   $.getJSON(`/api/v1/usersearch/`, function (data) {
-
     $("#draw-search-list").children('.remove-child').remove();
-
     for(let i=0;i<=data.length-1;i++)
     {
       let user=String(data[i]["username_eng"])
       const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
-
-
       $(searchedUser).appendTo('#draw-search-list');
     }
-
-
-
   });
-
-
-
-
 }
 
 function decrypt(data, key) {
@@ -445,14 +351,51 @@ function encrypt(data, key) {
 }
 
 
-// for testing
-// const userItem = `<li class="contact">
-//     <div class="wrap">
-//     <span class="contact-status online"></span>
-//     <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-//     <div class="meta">
-//         <p class="name" id="name_id">${data[i]['username']}</p>
-//         <p class="preview">You just got LITT up, Mike.</p>
-//     </div>
-//     </div>
-// </li>`
+// run this after loading document tree
+$(document).ready(function () {
+  updateUserList();
+  disableInput();
+  // $("#message-box").scrollTop($(document).height());
+  // Set usernamme title
+  userProfile.getElementsByTagName('h1')[0].innerText=currentUserName
+  // let socket = new WebSocket(`ws://127.0.0.1:8000/?session_key=${sessionKey}`);
+  var socket = new WebSocket(
+    'ws://' + window.location.host +
+    '/ws?session_key=${sessionKey}')
+
+  // HTTP GET /api/v1/message/?target=test2 200 [0.87, 127.0.0.1:38868]
+  chatInput.keypress(function (e) {
+    if (e.keyCode == 13)
+      chatButton.click();
+  });
+
+  chatButton.click(function () {
+    if (chatInput.val().length > 0) {
+      let body= chatInput.val();
+      // var csrftoken = Cookies.get('csrftoken');
+      // console.log(csrftoken);
+      // console.log(body);
+      //   sendMessage(currentRecipient, chatInput.val(), image);
+      body = encrypt(body,currentUser);
+
+      //   var decrypted = CryptoJS.AES.decrypt(encrypted, "123");
+
+      chatInput.val('');
+
+      $.post('/api/v1/message/', {
+        recipient: currentRecipient,
+        body: body,
+        files:null
+      }).fail(function () {
+        alert('Error! Check console!');
+      });
+    }
+  });
+
+  // Receive message from websocket
+  socket.onmessage = function (e) {
+    console.log('socket onmessage');
+    getMessageById(e.data);
+  };
+
+});

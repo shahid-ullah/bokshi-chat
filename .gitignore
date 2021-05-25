@@ -14,6 +14,7 @@ _pycache_
 db.sqlite3
 local_settings.py
 media
+mediafiles/
 static-cdn/
 staticfiles
 
