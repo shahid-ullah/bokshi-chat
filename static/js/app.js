@@ -11,7 +11,7 @@ let userProfile = document.getElementById('user-profile')
 let searchInput = $('#search-input')
 let fileSharing=$('#file_sharing')
 let fileSection=$('#file-section')
-let form_data = new FormData();
+// let form_data = new FormData();
 
 // $('#OpenImgUpload').click(function(){
 //      console.log("the upload is clicked !!!")
@@ -21,7 +21,53 @@ let form_data = new FormData();
 let selectedUserName = null
 let currentRecipientName=null
 
+// Enable input button
+function enableInput() {
+  chatInput.prop('disabled', false);
+  chatButton.prop('disabled', false);
+  chatInput.focus();
+  // chatInput.show()
+  // chatButton.show()
+}
 
+// Disable input button
+function disableInput() {
+  chatInput.prop('disabled', true);
+  chatButton.prop('disabled', true);
+  // chatInput.hide()
+  // chatButton.hide()
+
+}
+
+// Fetch Friend list
+function updateUserList() {
+  $.getJSON('api/v1/members/', function (data) {
+    userList.children('.user').remove();
+
+    for (let i = 0; i < data.length; i++) {
+      // const userItem = `<li class="contact">${data[i]['username']}</li>`;
+
+      const userItem =
+        `
+            <div id="selectUser" class="user" onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
+                    <li class="media align-items-center px-1  py-2">
+                        <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
+                        <div class="media-body">
+                            <div>
+                                <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                <div class="flex align-items-center">
+                                     <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+          </div>
+          `
+      $(userItem).appendTo('#user-list');
+    }
+  });
+}
 
 // Fetch all users from database through api
 function onSelectUser(user,username_eng){
@@ -29,6 +75,101 @@ function onSelectUser(user,username_eng){
   setCurrentRecipient(user,username_eng)
   getSharedFiles(user)
 }
+
+// set clicked user as currentRecipient
+// get all conversation of currentRecipient or currentUser
+function setCurrentRecipient(username,username_eng) {
+
+  username_tag = contactProfile.getElementsByTagName('h4')[0]
+  username_tag.innerText = username_eng
+  currentRecipient = username;
+  getConversation(currentRecipient);
+  enableInput();
+}
+
+
+// Fetch last 20 conversatio from the database
+function getConversation(recipient) {
+  $.getJSON(`/api/v1/message/?target=${recipient}`, function (data) {
+    messageList.children('.message').remove();
+    for (let i = data['results'].length - 1; i >= 0; i--) {
+      drawMessage(data['results'][i]);
+    }
+
+  });
+
+}
+
+
+// Receive one message and append it to message list
+function drawMessage(message) {
+
+  let date = new Date(message.timestamp);
+  // const minute=date.toLocaleString('en-US', { minute: 'numeric' })
+  const day=date.toLocaleString('en-US', { weekday: 'long'})
+  const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+  let body=null;
+
+  // check message contains file or text message
+  // if message body is null, this means message only contains files
+  if(message.body==="null"){
+    var fileName=message.files.split("/");
+    fileName=fileName[fileName.length-1]
+
+    body=`<a href=${message.files} target="_blank" >${fileName}</a>`
+
+    addFilesFromSocket(message.files,fileName )
+  }
+  else{
+
+    if (message.user === currentUser){
+      body=message.body
+      body = decrypt(body,currentUser)
+    }
+    else
+    {
+      body=message.body
+      body = decrypt(body,message.user)
+    }
+  }
+
+  // style message item based on user
+  if (message.user === currentUser) {
+    // console.log("from current user body",body)
+    const messageItem= `
+                             <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
+                                <div class="media sending">
+                                    <div class="media-body text-right">
+                                        <span class="font-size-12 mb-0 color-gray">${day} ${hour}</span>
+                                        <div class="msg-text text-left">
+                                          ${body}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+         `
+    $(messageItem).appendTo('#message-list');
+  }
+  else{
+    // console.log("from current user body",body)
+
+    const messageItem=
+      `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
+                 <div class="media comming">
+                  <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
+                    <div class="media-body">
+                      <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, ${day} ${hour}</span>
+                        <div  class="msg-text">
+                                ${body}
+                 </div>
+                 </div>
+                </div>
+            </li>
+         `
+    $(messageItem).appendTo('#message-list');
+  }
+}
+
 
 // Fetch user uploaded files
 function getSharedFiles(user)
@@ -102,38 +243,6 @@ function addFilesFromSocket(file,fileName){
   $(sharedItem).appendTo('#file_sharing');
 }
 
-// Fetch Friend list
-function updateUserList() {
-  $.getJSON('api/v1/members/', function (data) {
-    userList.children('.user').remove();
-
-    for (let i = 0; i < data.length; i++) {
-      // const userItem = `<li class="contact">${data[i]['username']}</li>`;
-
-      const userItem =
-        `
-            <div id="selectUser" class="user"   onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
-                    <li class="media align-items-center px-1  py-2">
-                        <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
-                        <div class="media-body">
-                            <div>
-                                <h5 class="m-0">${data[i]['username_eng']}</h5>
-                                <div class="flex align-items-center">
-                                     <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-
-          </div>
-          `
-      $(userItem).appendTo('#user-list');
-    }
-  });
-}
-
-// Receive one message and append it to message list
-
 
 function removeUser(friend){
   // console.log(friend)
@@ -148,85 +257,6 @@ function removeUser(friend){
 }
 
 
-function drawMessage(message) {
-
-  let date = new Date(message.timestamp);
-  // const minute=date.toLocaleString('en-US', { minute: 'numeric' })
-  const day=date.toLocaleString('en-US', { weekday: 'long'})
-  const hour=date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-  let body=null;
-
-  // check message contains file or text message
-  // if message body is null, this means message only contains files
-  if(message.body==="null"){
-    var fileName=message.files.split("/");
-    fileName=fileName[fileName.length-1]
-
-    body=`<a href=${message.files} target="_blank" >${fileName}</a>`
-
-    addFilesFromSocket(message.files,fileName )
-  }
-  else{
-
-    if (message.user === currentUser){
-      body=message.body
-      body = decrypt(body,currentUser)
-    }
-    else
-    {
-      body=message.body
-      body = decrypt(body,message.user)
-    }
-  }
-
-  // style message item based on user
-  if (message.user === currentUser) {
-    // console.log("from current user body",body)
-    const messageItem= `
-                             <li class="px-2 py-2 pb-1 d-flex justify-content-end message">
-                                <div class="media sending">
-                                    <div class="media-body text-right">
-                                        <span class="font-size-12 mb-0 color-gray">${day} ${hour}</span>
-                                        <div class="msg-text text-left">
-                                          ${body}
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-         `
-    $(messageItem).appendTo('#message-list');
-  }
-  else{
-    // console.log("from current user body",body)
-
-    const messageItem=
-      `     <li class="px-2 py-2 pb-1  d-flex justify-content-start message">
-                 <div class="media comming">
-                  <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-4" height="40" width="40" />
-                    <div class="media-body">
-                      <span class="font-size-12 mb-0 color-gray">${currentRecipientName}, ${day} ${hour}</span>
-                        <div  class="msg-text">
-                                ${body}
-                 </div>
-                 </div>
-                </div>
-            </li>
-         `
-    $(messageItem).appendTo('#message-list');
-  }
-}
-
-// Fetch last 20 conversatio from the database
-function getConversation(recipient) {
-  $.getJSON(`/api/v1/message/?target=${recipient}`, function (data) {
-    messageList.children('.message').remove();
-    for (let i = data['results'].length - 1; i >= 0; i--) {
-      drawMessage(data['results'][i]);
-    }
-
-  });
-
-}
 
 // Retrive message by message id and add to messageList
 // Access message id from websocket
@@ -274,35 +304,7 @@ function uploadFile(recipient, body,file) {
     .then(response => console.log(response))
 }
 
-// set clicked user as currentRecipient
-// get all conversation of currentRecipient or currentUser
-function setCurrentRecipient(username,username_eng) {
 
-  username_tag = contactProfile.getElementsByTagName('h4')[0]
-  username_tag.innerText = username_eng
-  currentRecipient = username;
-  getConversation(currentRecipient);
-  enableInput();
-}
-
-
-// Enable input button
-function enableInput() {
-  chatInput.prop('disabled', false);
-  chatButton.prop('disabled', false);
-  chatInput.focus();
-  // chatInput.show()
-  // chatButton.show()
-}
-
-// Disable input button
-function disableInput() {
-  chatInput.prop('disabled', true);
-  chatButton.prop('disabled', true);
-  // chatInput.hide()
-  // chatButton.hide()
-
-}
 
 
 function onSelectSearchedUser(username){
@@ -336,7 +338,7 @@ function drawSearchedUser(){
     for(let i=0;i<=data.length-1;i++)
     {
       let user=String(data[i]["username_eng"])
-      const searchedUser=`<option class="remove-chil" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
+      const searchedUser=`<option class="remove-child" value= ${data[i]['username']}> ${data[i]['username_eng']} </option>`
       $(searchedUser).appendTo('#draw-search-list');
     }
   });

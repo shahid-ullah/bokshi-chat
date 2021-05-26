@@ -16,11 +16,7 @@ environ.Env.read_env(env_file)
 
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'ABC1234'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 # Application definition
 
@@ -98,27 +94,22 @@ DATABASES = {
 }
 # Password validation
 
-AUTH_PASSWORD_VALIDATORS = []
-
-# {
-#     'NAME':
-#  'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.MinimumLengthValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.CommonPasswordValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.NumericPasswordValidator',
-# },
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 # Internationalization
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -182,12 +173,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-    'http://localhost:8000',
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+#     'http://localhost:8000',
+# )
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'user_app.UserModel'
 AUTHENTICATION_BACKENDS = (
