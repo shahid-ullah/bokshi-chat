@@ -2,20 +2,28 @@
 
 import json
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user_id = self.scope["session"]["_auth_user_id"]
-        self.group_name = "{}".format(user_id)
-        await self.channel_layer.group_add(self.group_name, self.channel_name)
-
-        await self.accept()
+        if not self.scope['user'].is_anonymous:
+            user_id = self.scope["session"]["_auth_user_id"]
+            self.group_name = "{}".format(user_id)
+            await self.channel_layer.group_add(self.group_name, self.channel_name)
+            await self.socket_connection_increment()
+            await self.accept()
+        else:
+            await self.close()
 
     async def disconnect(self, close_code):
         # Leave room group
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        await self.socket_connection_decrement()
 
     # Receive message from WebSocket
     # async def receive(self, text_data=None,bytes_data = None):
@@ -37,6 +45,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}))
+
+    @database_sync_to_async
+    def socket_connection_increment(self):
+        id = int(self.scope['user'].id)
+        user = User.objects.get(id=id)
+        user.socket_connection += 1
+        user.save()
+
+    @database_sync_to_async
+    def socket_connection_decrement(self):
+        id = int(self.scope['user'].id)
+        user = User.objects.get(id=id)
+        user.socket_connection -= 1
+        user.save()
 
 
 # class GroupChatConsumer(AsyncWebsocketConsumer):

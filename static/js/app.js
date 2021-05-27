@@ -46,25 +46,53 @@ function updateUserList() {
 
     for (let i = 0; i < data.length; i++) {
       // const userItem = `<li class="contact">${data[i]['username']}</li>`;
-
-      const userItem =
-        `
-            <div id="selectUser" class="user" onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
-                    <li class="media align-items-center px-1  py-2">
-                        <img src="../../static/img/user-img.png" alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">
-                        <div class="media-body">
-                            <div>
-                                <h5 class="m-0">${data[i]['username_eng']}</h5>
-                                <div class="flex align-items-center">
-                                     <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-
-          </div>
+    // console.log(data[i].socket_connection);
+      if (data[i].socket_connection == 0){
+        const userItem =
           `
+              <div id="selectUser" class="user" onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
+                      <li class="media align-items-center px-1  py-2">
+                          <div class="img_cont">
+                          <img src="../../static/img/user-img.png"alt="user-image" title="user-image" class="rounded-circle user_img">
+                          <span class="online_icon offline"></span>
+                          </div>
+                          <div class="media-body">
+                              <div>
+                                  <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                  <div class="flex align-items-center">
+                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
+                                  </div>
+                              </div>
+                          </div>
+                      </li>
+
+            </div>
+            `
       $(userItem).appendTo('#user-list');
+      }
+      else {
+        const userItem =
+          `
+              <div id="selectUser" class="user" onclick="onSelectUser('${data[i]['username']}','${data[i]['username_eng']}')">
+                      <li class="media align-items-center px-1  py-2">
+                          <div class="img_cont">
+                          <img src="../../static/img/user-img.png"alt="user-image" title="user-image" class="rounded-circle user_img">
+                          <span class="online_icon"></span>
+                          </div>
+                          <div class="media-body">
+                              <div>
+                                  <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                  <div class="flex align-items-center">
+                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
+                                  </div>
+                              </div>
+                          </div>
+                      </li>
+
+            </div>
+            `
+      $(userItem).appendTo('#user-list');
+      }
     }
   });
 }
@@ -401,3 +429,4 @@ $(document).ready(function () {
   };
 
 });
+// <img src="../../static/img/user-img.png"alt="user-image" title="user-image" class="rounded mr-2" height="50" width="50">

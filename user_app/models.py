@@ -17,6 +17,10 @@ class UserModel(AbstractUser):
     active = models.BooleanField(default=True)
     father_name_eng = models.CharField(blank=True, max_length=100)
     father_name_bng = models.CharField(blank=True, max_length=100)
+    socket_connection = models.IntegerField(default=0)
+
+    def get_socket_connections(self):
+        return self.socket_connection
 
     def __str__(self):
         return self.username

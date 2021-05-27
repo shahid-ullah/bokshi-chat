@@ -34,7 +34,7 @@ class MessageModelSerializer(ModelSerializer):
 class UserModelSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'username_eng')
+        fields = ('id', 'username', 'username_eng', 'socket_connection')
 
 
 class RelationshipModelSerializer(ModelSerializer):
