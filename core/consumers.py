@@ -14,9 +14,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not self.scope['user'].is_anonymous:
             user_id = self.scope["session"]["_auth_user_id"]
             self.group_name = "{}".format(user_id)
+            self.online_group_name = "online_sockets"
             await self.channel_layer.group_add(self.group_name, self.channel_name)
+            await self.channel_layer.group_add(
+                self.online_group_name, self.channel_name
+            )
             await self.socket_connection_increment()
             await self.accept()
+            # await self.send(text_data=json.dumps({'message': 'shahidullah'}))
         else:
             await self.close()
 
@@ -41,10 +46,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     #         }
     #     )
 
+    async def receive_message_from_signals(self, event):
+        message = 'testing realtime user status update'
+        # breakpoint()
+        await self.send(text_data=json.dumps({'message': message, 'signal': True }))
+
     async def recieve_group_message(self, event):
         message = event['message']
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}))
+        await self.send(text_data=json.dumps({'message': message, 'signal': False}))
 
     @database_sync_to_async
     def socket_connection_increment(self):

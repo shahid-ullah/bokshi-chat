@@ -425,7 +425,30 @@ $(document).ready(function () {
   // Receive message from websocket
   socket.onmessage = function (e) {
     console.log('socket onmessage');
-    getMessageById(e.data);
+    // console.log(e.data);
+    // // userList.children('.user').remove();
+    // // const userItem =
+    // //   `
+    // //     <div>
+    // //     <li>this is for testing purpose</li>
+    // //     </div>
+    // //   `
+    // $(userItem).appendTo('#user-list');
+    // console.log(e.data);
+    data = JSON.parse(e.data);
+    signal = data.signal;
+    // console.log(signal);
+    if (signal==true) {
+      console.log('in if statement');
+      console.log(e.data);
+    }
+    else {
+      // console.log(e.data);
+      // console.log('in else statement');
+      // console.log(e.data)
+      getMessageById(e.data);
+    }
+    // getMessageById(e.data);
   };
 
 });

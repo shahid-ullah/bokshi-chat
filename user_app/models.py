@@ -1,6 +1,13 @@
 # user_app/models.py
+import channels.layers
+from asgiref.sync import async_to_sync
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+# from .models import Job
+
 
 
 # Create your models here.
@@ -24,3 +31,46 @@ class UserModel(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+# def send_message(event):
+#     '''
+#     Call back function to send message to the browser
+#     '''
+#     message = event['text']
+#     channel_layer = channels.layers.get_channel_layer()
+#     # Send message to WebSocket
+#     async_to_sync(channel_layer.send)(text_data=json.dumps(
+#         message
+#     ))
+
+
+@receiver(post_save, sender=UserModel)
+def update_user_online_status(sender, instance, **kwargs):
+    """
+    Sends job status to the browser when a Job is modified
+    """
+
+    # user = instance.owner
+    # group_name = 'job-user-{}'.format(user.username)
+    # print()
+    # print('update job status listeners called')
+    # print(kwargs)
+    # print()
+
+    # message = {
+    #     'job_id': instance.id,
+    #     'title': instance.title,
+    #     'status': instance.status,
+    #     'modified': instance.modified.isoformat(),
+    # }
+
+    channel_layer = channels.layers.get_channel_layer()
+
+    async_to_sync(channel_layer.group_send)(
+        'online_sockets',
+        {
+            'type': 'receive_message_from_signals',
+            'text': 'this is from signals'
+        }
+    )
