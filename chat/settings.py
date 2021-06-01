@@ -178,7 +178,7 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 #     'http://localhost:8000',
 # )
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'user_app.UserModel'
 AUTHENTICATION_BACKENDS = (
