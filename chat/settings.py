@@ -173,12 +173,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000',
-#     'http://localhost:8000',
-# )
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://bokshi-chat.tappware.com'
+)
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'user_app.UserModel'
 AUTHENTICATION_BACKENDS = (
