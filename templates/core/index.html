@@ -12,7 +12,6 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/emojis.css' %}" />
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/jquery.fancybox.css' %}" />
         <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/styles.css' %}" />
-        <script src="https://kit.fontawesome.com/b1eb6b9fd3.js" crossorigin="anonymous"></script>
     </head>
 
     <body>
@@ -38,7 +37,7 @@
                         </div>
                     </div>
                     <div id="search-input">
-                        <div class="" > 
+                        <div class="" >
                         {% comment %} messenger-friend-search {% endcomment %}
                             <div class="input-group">
                                 {% comment %} <div class="input-group-prepend">
@@ -47,11 +46,11 @@
                                 <input id="search-input" type="text" class="form-control" placeholder="Search" aria-label="Username"
                                     aria-describedby="basic-addon1">  {% endcomment %}
                                 <select onchange="onSelectSearchedUser(value)" id="draw-search-list" class="js-example-basic-single" name="state" placeholder="Search User" >
-                                    
+
                                      <option value="ttt" disabled selected hidden>Please Choose...</option>
-                                     
-                                     
-                                
+
+
+
                                 </select>
                             </div>
                         </div>
@@ -59,7 +58,7 @@
                 </div>
                 <div class="messenger-user-list-wrapper mt-3">
                     <ul id="user-list" class="list-unstyled">
-                    
+
                     </ul>
                 </div>
             </aside>
@@ -81,7 +80,7 @@
                     </div>
                     <div class="chat-text-show-wrapper mt-2 position-relative">
                         <ul class="list-unstyled" id="message-list">
-                            
+
                         </ul>
                     </div>
                     <div class="chat-input-wrapper py-3 px-2 d-block position-relative">
@@ -92,8 +91,8 @@
                                             <button  id="btn-send" id="btn-send" type="submit" class="btn btn-link" > <i class="fa fa-paper-plane"></i></button>
                                 </div>
                              <div class="input-group-append">
-                                            <input type="file" id="FileUpload" style="display:none"/> 
-                                            <button id="OpenFileUpload" type="submit" class="btn btn-link" > 
+                                            <input type="file" id="FileUpload" style="display:none"/>
+                                            <button id="OpenFileUpload" type="submit" class="btn btn-link" >
                                                 <i class="fa fa-upload" aria-hidden="true"></i>
                                             </button>
                             </div>
@@ -151,6 +150,7 @@
         <script type="text/javascript" src="{% static 'js/DisMojiPicker.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.fancybox.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/custom.js' %} "></script>
+        <script src="https://kit.fontawesome.com/b1eb6b9fd3.js" crossorigin="anonymous"></script>
         <script type="text/javascript">
             // In your Javascript (external .js resource or <script> tag)
             $(document).ready(function() {
@@ -160,7 +160,7 @@
         </script>
 
          <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
- 
+
         <script>
         let sessionKey = '{{ request.session.session_key }}';
         let currentUser = '{{ request.user.username }}';
