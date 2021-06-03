@@ -6,11 +6,9 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# from .models import Job
+channel_layer = channels.layers.get_channel_layer()
 
 
-
-# Create your models here.
 class UserModel(AbstractUser):
     username_eng = models.CharField(blank=True, max_length=100)
     username_bng = models.CharField(blank=True, max_length=100)
@@ -33,44 +31,23 @@ class UserModel(AbstractUser):
         return self.username
 
 
-# def send_message(event):
-#     '''
-#     Call back function to send message to the browser
-#     '''
-#     message = event['text']
-#     channel_layer = channels.layers.get_channel_layer()
-#     # Send message to WebSocket
-#     async_to_sync(channel_layer.send)(text_data=json.dumps(
-#         message
-#     ))
-
-
 @receiver(post_save, sender=UserModel)
-def update_user_online_status(sender, instance, **kwargs):
+def notify_user_online_status(sender, instance, **kwargs):
     """
-    Sends job status to the browser when a Job is modified
+    Sends user status to the browser when a UserModel is modified
     """
+    # print('update user online status called')
 
-    # user = instance.owner
-    # group_name = 'job-user-{}'.format(user.username)
-    # print()
-    # print('update job status listeners called')
-    # print(kwargs)
-    # print()
+    # After login model update occurs twice
+    # only inform once when update_fields is not last_login
+    update_fields = kwargs.get('update_fields')
+    if update_fields is None:
 
-    # message = {
-    #     'job_id': instance.id,
-    #     'title': instance.title,
-    #     'status': instance.status,
-    #     'modified': instance.modified.isoformat(),
-    # }
-
-    channel_layer = channels.layers.get_channel_layer()
-
-    async_to_sync(channel_layer.group_send)(
-        'online_sockets',
-        {
-            'type': 'receive_message_from_signals',
-            'text': 'this is from signals'
-        }
-    )
+        async_to_sync(channel_layer.group_send)(
+            'online_users',
+            {
+                'type': 'receive_online_status_notification',
+                'username': str(instance.username_eng),
+                'socket_connection': str(instance.socket_connection),
+            },
+        )

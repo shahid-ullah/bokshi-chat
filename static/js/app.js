@@ -58,7 +58,7 @@ function updateUserList() {
                           </div>
                           <div class="media-body">
                               <div>
-                                  <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                  <h5 class="username m-0">${data[i]['username_eng']}</h5>
                                   <div class="flex align-items-center">
                                        <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
                                   </div>
@@ -81,7 +81,7 @@ function updateUserList() {
                           </div>
                           <div class="media-body">
                               <div>
-                                  <h5 class="m-0">${data[i]['username_eng']}</h5>
+                                  <h5 class="username m-0">${data[i]['username_eng']}</h5>
                                   <div class="flex align-items-center">
                                        <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
                                   </div>
@@ -381,6 +381,24 @@ function encrypt(data, key) {
 }
 
 
+function UpdateUserStatus(username, socket_connection) {
+  var username = username;
+  var socket_connection = parseInt(socket_connection);
+  var usernames = document.getElementsByClassName('username');
+  for (var i = 0, len = usernames.length; i < len; i++) {
+    var uname = usernames[i].innerText;
+    if (uname == username){
+      if (socket_connection > 0) {
+        usernames[i].parentElement.parentElement.parentElement.getElementsByTagName('span')[0].className = 'online_icon'
+      }
+      else {
+        usernames[i].parentElement.parentElement.parentElement.getElementsByTagName('span')[0].className = 'offline'
+      }
+    }
+  }
+}
+
+
 // run this after loading document tree
 $(document).ready(function () {
   updateUserList();
@@ -435,12 +453,16 @@ $(document).ready(function () {
     // //   `
     // $(userItem).appendTo('#user-list');
     // console.log(e.data);
-    data = JSON.parse(e.data);
-    signal = data.signal;
+    var data = JSON.parse(e.data);
+    var signal = data.signal;
     // console.log(signal);
     if (signal==true) {
-      console.log('in if statement');
-      console.log(e.data);
+      // console.log('in if statement');
+      // console.log(e.data);
+      // console.log(data.message);
+     if (data.message.username != currentUserName) {
+        UpdateUserStatus(data.message.username, data.message.socket_connection);
+     }
     }
     else {
       // console.log(e.data);
