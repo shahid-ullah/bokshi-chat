@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 channel_layer = channels.layers.get_channel_layer()
 
@@ -23,6 +24,18 @@ class UserModel(AbstractUser):
     father_name_eng = models.CharField(blank=True, max_length=100)
     father_name_bng = models.CharField(blank=True, max_length=100)
     socket_connection = models.IntegerField(default=0)
+    created = models.DateTimeField(editable=False)
+    updated = models.DateTimeField()
+
+    class Meta:
+        ordering = ('-updated',)
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created = timezone.now()
+        self.updated = timezone.now()
+        return super(UserModel, self).save(*args, **kwargs)
 
     def get_socket_connections(self):
         return self.socket_connection

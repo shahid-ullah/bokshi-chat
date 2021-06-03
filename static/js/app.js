@@ -281,7 +281,6 @@ function removeUser(friend){
   }).fail(function () {
     alert('Error! Check console!');
   });
-
 }
 
 
