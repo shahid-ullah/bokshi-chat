@@ -60,7 +60,7 @@ function updateUserList() {
                               <div>
                                   <h5 class="username m-0">${data[i]['username_eng']}</h5>
                                   <div class="flex align-items-center">
-                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
+                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser(event, '${data[i]['username']}')">Remove</button></span>
                                   </div>
                               </div>
                           </div>
@@ -83,7 +83,7 @@ function updateUserList() {
                               <div>
                                   <h5 class="username m-0">${data[i]['username_eng']}</h5>
                                   <div class="flex align-items-center">
-                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser('${data[i]['username']}')">Remove</button></span>
+                                       <span><button  class="btn btn-sm btn-primary" onclick="removeUser(event, '${data[i]['username']}')">Remove</button></span>
                                   </div>
                               </div>
                           </div>
@@ -272,8 +272,12 @@ function addFilesFromSocket(file,fileName){
 }
 
 
-function removeUser(friend){
-  // console.log(friend)
+function removeUser(element, friend){
+  // console.log(element.target);
+  // console.dir(element);
+  element.cancelBubble = true;
+  // console.log(friend);
+  // console.log($(this));
   $.post('api/v1/remove-user/', {
     creator: currentUser,
     friend: friend
@@ -281,6 +285,10 @@ function removeUser(friend){
   }).fail(function () {
     alert('Error! Check console!');
   });
+  updateUserList();
+  messageList.children('.message').remove();
+  fileSharing.children('.shared').remove();
+  disableInput();
 }
 
 
@@ -336,11 +344,11 @@ function uploadFile(recipient, body,file) {
 
 function onSelectSearchedUser(username){
   $.getJSON(`/api/v1/usersearch/?username=${username}`, function (data) {
-    const selctedSearchedUserID = data[0]['id']
-    const username_eng=data[0]['username_eng']
+    const selctedSearchedUserID = data[0]['id'];
+    const username_eng=data[0]['username_eng'];
 
-    setCurrentRecipient(username,username_eng)
-    currentRecipientName=username_eng
+    setCurrentRecipient(username,username_eng);
+    currentRecipientName=username_eng;
 
     $.post('/api/v1/member/add/', {
       creator: currentUserID,

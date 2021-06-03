@@ -303,6 +303,9 @@ def UserRemoveAPIView(request):
             Relationship.objects.filter(creator_id=creatorObject.id).filter(
                 friend_id=friendObject.id
             ).delete()
+            Relationship.objects.filter(creator_id=friendObject.id).filter(
+                friend_id=creatorObject.id
+            ).delete()
             # MessageModel.objects.filter(user_id=creatorObject.id).filter(
             #     recipient_id=friendObject.id
             # ).delete()
