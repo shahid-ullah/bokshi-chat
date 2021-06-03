@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from core.api import (AddMembershipAPI, GetFilesAPI, MemberListView,
                       MessageModelViewSet, SearchUserListAPI, UserModelViewSet,
                       UserRemoveAPIView)
+from core.views import home
 
 router = DefaultRouter()
 router.register(r'message', MessageModelViewSet, basename='message-api')
@@ -20,6 +21,7 @@ urlpatterns = [
     path('api/v1/usersearch/', SearchUserListAPI.as_view(), name='add_memeber'),
     path('api/v1/get-files/', GetFilesAPI.as_view(), name='add_memeber'),
     path('api/v1/remove-user/', UserRemoveAPIView, name='remove_memeber'),
+    path('', home, name='home'),
     # path('chat/groups/', ChatGroupView.as_view(), name='chat_groups'),
     # path('chat/<int:pk>/group/', ChatGroupDetailview.as_view(), name='chat_group'),
     # path(
@@ -38,11 +40,6 @@ urlpatterns = [
     #     name='chat_group_message',
     # ),
     # path('group/', group_view, name='groups'),
-    path(
-        '',
-        login_required(TemplateView.as_view(template_name='core/index2.html')),
-        name='home',
-    ),
     # path(
     #     '',
     #     login_required(TemplateView.as_view(template_name='core/chat.html')),
