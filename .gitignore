@@ -3,7 +3,6 @@ note
 .vim
 Session.vim
 .vscode/
-requirements.txt
 dump.rdb
 
 # Django #
